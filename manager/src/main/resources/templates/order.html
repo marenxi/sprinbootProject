@@ -43,9 +43,10 @@
     <button type="button" class="layui-btn layui-btn-sm">已结束</button>
     <button type="button" class="layui-btn layui-btn-sm">异常</button>
 </div>
-<script>
+<table id="ordertable" lay-filter="ordertablefilter"></table>
+<script type="text/javascript" th:inline="javascript">
     //Demo
-    layui.use(['layer', 'form', 'element', 'jquery', 'laydate'], function () {
+    layui.use(['layer', 'form', 'element', 'jquery', 'laydate','table'], function () {
         var laydate = layui.laydate;
         var form = layui.form;
         //执行一个laydate实例
@@ -60,6 +61,21 @@
             layer.msg(JSON.stringify(data.field));
             return false;
         });
+
+        var table = layui.table;
+
+        //第一个实例
+        table.render({
+            elem: '#ordertable'
+            ,height: 312
+            ,url: '/orderList' //数据接口
+            ,page: true //开启分页
+            ,cols: [[ //表头
+                {field: 'orderCode', title: '订单编号', width: '40%'},
+                {field: 'custmerId', title: '达人名称', width: '99%'}
+            ]]
+        });
+
     });
 </script>
 </body>
