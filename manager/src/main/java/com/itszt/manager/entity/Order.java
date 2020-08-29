@@ -1,7 +1,11 @@
 package com.itszt.manager.entity;
 
+import lombok.ToString;
+
+import javax.annotation.sql.DataSourceDefinition;
 import java.util.Date;
 
+@ToString
 public class Order {
     private String orderCode;
     private String status;
