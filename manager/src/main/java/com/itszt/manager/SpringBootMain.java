@@ -12,9 +12,7 @@ import org.springframework.context.annotation.ComponentScan;
  * @author: marenxi@jiuxian.com
  * @date: 2019-05-05 14:10/星期日
  */
-@SpringBootApplication(exclude= {DataSourceAutoConfiguration.class})
-//@ComponentScan("com.itszt")
-@MapperScan("com.itszt.manager.dao")
+@SpringBootApplication
 public class SpringBootMain {
     //项目主入口
     public static void main(String[] args) {

@@ -3,8 +3,8 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.itszt.manager.dao.MemberMapper" >
-    <select id="findById" resultType="com.itszt.manager.entity.Member">
+<mapper namespace="com.itszt.manager.dao.MemberDao" >
+    <select id="findById" resultType="com.itszt.manager.entity.Member" parameterType="java.lang.Integer">
         SELECT id,name ,age,work_type workType,telephone,regist_time registTime
         FROM member_manage
         WHERE id=#{id}
