@@ -18,4 +18,20 @@ public class MemberServiceImpl implements MemberService {
     public List<Member> findById(Integer id) {
         return memberMapper.findById(id);
     }
+
+
+    @Override
+    public List<Member> findAll() {
+        return memberMapper.findAll();
+    }
+
+    @Override
+    public void deleteMemberById(Integer id) {
+        memberMapper.deleteMemberById(id);
+    }
+
+    @Override
+    public void insertMember(Member member) {
+        memberMapper.insertMember(member);
+    }
 }
