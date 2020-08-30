@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.itszt.manager.dao.MemberDao" >
-    <select id="findById" resultType="com.itszt.manager.entity.Member" parameterType="java.lang.Integer">
+    <select id="findById" resultType="com.itszt.manager.entity.Member">
         SELECT id,name ,age,work_type workType,telephone,regist_time registTime
         FROM member_manage
         WHERE id=#{id}
