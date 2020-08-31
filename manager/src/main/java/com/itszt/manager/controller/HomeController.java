@@ -33,29 +33,6 @@ public class HomeController {
         return "home";
     }
 
-    @GetMapping("/order")
-    public String order() {
-        System.out.println("返回订单管理页面");
-        return "order";
-    }
-
-    @GetMapping("/orderList")
-    @ResponseBody
-    public DataResponse orderList() {
-        DataResponse dataResponse = new DataResponse();
-        ArrayList<Order> orders = new ArrayList<>();
-        Order order = new Order();
-        order.setOrderCode("x1234");
-        order.setCustmerId("1234");
-        orders.add(order);
-        System.out.println("返回订单集合数据");
-        dataResponse.setCode(0);
-        dataResponse.setData(orders);
-        dataResponse.setCount(orders.size());
-        dataResponse.setMsg("");
-        return dataResponse;
-    }
-
     @RequestMapping("/{page}")
     public String toPage(@PathVariable String page){
         return "page";

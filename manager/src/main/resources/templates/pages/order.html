@@ -43,12 +43,20 @@
     <button type="button" class="layui-btn layui-btn-sm">已结束</button>
     <button type="button" class="layui-btn layui-btn-sm">异常</button>
 </div>
+
 <table id="ordertable" lay-filter="ordertablefilter"></table>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
 <script type="text/javascript" th:inline="javascript">
     //Demo
     layui.use(['layer', 'form', 'element', 'jquery', 'laydate','table'], function () {
         var laydate = layui.laydate;
         var form = layui.form;
+        var table = layui.table;
+        var $ = layui.$;
         //执行一个laydate实例
         laydate.render({
             elem: '#startDate' //指定元素
@@ -62,18 +70,65 @@
             return false;
         });
 
-        var table = layui.table;
-
         //第一个实例
         table.render({
             elem: '#ordertable'
             ,height: 312
-            ,url: '/orderList' //数据接口
+            ,url: '/order/list' //数据接口
             ,page: true //开启分页
             ,cols: [[ //表头
-                {field: 'orderCode', title: '订单编号', width: '40%'},
-                {field: 'custmerId', title: '达人名称', width: '99%'}
+                {field: 'orderCode', title: '订单编号'},
+                {field: 'custmerId', title: '达人名称',align: 'left'},
+                {field: 'custmerId', title: '达人名称',align: 'center'},
+                {field: 'custmerId', title: '达人名称',align: 'right'},
+                {fixed: 'right', title:'操作', toolbar: '#barDemo',align: 'center'}
             ]]
+        });
+
+        //监听行工具事件
+        table.on('tool(ordertablefilter)', function(obj){
+            var data = obj.data;
+            console.log(obj)
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    $.ajax({
+                        async: true,//默认是true同步  异步改false
+                        url: "/order/del",//要访问的服务器地址
+                        type: "POST", //访问方式（POST）
+                        data: {"orderCode": data.orderCode},
+                        dataType: "json",
+                        success: function (data) {
+                            //请求成功触发的回调
+                            console.log(data)
+                            if(data.code==200){
+                                layer.alert(data.msg, {icon: 6}, function (index) {
+                                    //关闭当前frame
+                                    layer.close(index);
+                                });
+                                obj.del();//删除对应行（tr）的DOM结构，并更新缓存
+                            }
+                        },
+                        error: function (err) {
+                            //请求失败触发的回调
+                            console.log(err)
+                        }
+                    })
+                });
+            } else if(obj.event === 'edit'){
+                layer.open({
+                    type: 2,
+                    area: [($(window).width() * 0.7) + 'px', ($(window).height()* 0.7) + 'px'],
+                    fix: false, //不固定
+                    maxmin: true,
+                    shadeClose: false,
+                    shade: 0.4,
+                    title: "编辑订单",
+                    content: '/order/edit?orderCode='+ data.orderCode,
+                    end: function () {
+                        $("#queryButton").click();
+                    }
+                });
+            }
         });
 
     });
