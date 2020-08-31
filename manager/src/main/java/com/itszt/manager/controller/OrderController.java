@@ -51,4 +51,11 @@ public class OrderController {
         mv.setViewName("order/orderEdit");
         return mv;
     }
+
+    @RequestMapping("/add")
+    public ModelAndView  orderAdd(String orderCode) {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("order/orderAdd");
+        return mv;
+    }
 }
