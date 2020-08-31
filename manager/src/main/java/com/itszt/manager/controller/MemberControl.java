@@ -6,10 +6,7 @@ import com.itszt.manager.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,6 +15,11 @@ public class MemberControl {
     @Autowired
     MemberService memberService;
 
+    @GetMapping("/member")
+    public String order() {
+        System.out.println("返回会员管理页面");
+        return "/member/member";
+    }
 
     @RequestMapping("/findMemberById")
     @ResponseBody
@@ -31,12 +33,19 @@ public class MemberControl {
     @ResponseBody
     public DataResponse findAllMember(){
         DataResponse dataResponse = new DataResponse();
-        List<Member> memberList = memberService.findAll();
-        System.out.println(memberList);
-        System.out.println("返回会员集合数据");
-        dataResponse.setCode(0);
-        dataResponse.setData(memberList);
-        dataResponse.setCount(memberList.size());
+        try {
+            List<Member> memberList = memberService.findAll();
+            System.out.println(memberList);
+            System.out.println("返回会员集合数据");
+            dataResponse.setCode(0);
+            dataResponse.setData(memberList);
+            dataResponse.setCount(memberList.size());
+        }catch (Exception e){
+            dataResponse.setCode(0);
+            dataResponse.setData(null);
+            dataResponse.setCount(0);
+            System.out.println("e = " + e);
+        }
         dataResponse.setMsg("");
         return dataResponse;
 
@@ -46,14 +55,14 @@ public class MemberControl {
     @RequestMapping(value="/memberDelete/{id}",method= RequestMethod.DELETE)
     public String deleteOrderById(@PathVariable Integer id){
         memberService.deleteMemberById(id);
-        return "redirect:/MemberList";
+        return "redirect:/member/MemberList";
     }
 
     //会员信息的新增
     @RequestMapping("/insertMember")
     public String insertMember(Member member){
         memberService.insertMember(member);
-        return "redirect:/MemberList";
+        return "redirect:/member/MemberList";
     }
 
 }

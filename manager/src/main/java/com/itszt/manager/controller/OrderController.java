@@ -15,7 +15,7 @@ public class OrderController {
     @GetMapping
     public String order() {
         System.out.println("返回订单管理页面");
-        return "order";
+        return "/order/order";
     }
 
     @GetMapping("/list")
@@ -46,9 +46,9 @@ public class OrderController {
     }
 
     @RequestMapping("/edit")
-    public ModelAndView orderEdit(String orderCode) {
+    public ModelAndView  orderEdit(String orderCode) {
         ModelAndView mv = new ModelAndView();
-        mv.setViewName("orderEdit");
+        mv.setViewName("order/orderEdit");
         return mv;
     }
 }
