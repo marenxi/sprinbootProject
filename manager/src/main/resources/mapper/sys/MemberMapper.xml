@@ -8,7 +8,7 @@
     <!--根据id查询会员信息-->
     <select id="findById" resultType="com.itszt.manager.entity.Member">
         SELECT id,name ,age,work_type workType,telephone,regist_time registTime,status
-        FROM member_manage
+        FROM myssproject.member_manage
         WHERE id=#{id}
 
     </select>
@@ -16,19 +16,19 @@
     <!--查询所有的会员信息-->
     <select id="findAll" resultType="com.itszt.manager.entity.Member">
         SELECT id,name ,age,work_type workType,telephone,regist_time registTime,status
-        FROM member_manage
+        FROM myssproject.member_manage
     </select>
 
 
     <!--根据id删除会员信息-->
     <delete id="deleteMemberById" parameterType="int">
-        DELETE from member_manage
+        DELETE from myssproject.member_manage
         where id=#{id}
     </delete>
 
     <!--新增会员信息-->
     <insert id="insertMember" parameterType="com.itszt.manager.entity.Member">
-        INSERT into member_manage(name,age,work_Type workType,telephone,regist_time registTime,status)
+        INSERT into myssproject.member_manage(name,age,work_type,telephone,regist_time,status)
         VALUES(#{name},#{age},#{workType},#{telephone},#{registTime},#{status})
 
     </insert>

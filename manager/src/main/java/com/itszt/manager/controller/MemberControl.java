@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -59,10 +60,18 @@ public class MemberControl {
     }
 
     //会员信息的新增
-    @RequestMapping("/insertMember")
-    public String insertMember(Member member){
+    @RequestMapping("/member/add")
+    public ModelAndView memberAdd() {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("member/memberAdd");
+        return mv;
+    }
+
+
+    @PostMapping("/insertMember")
+    public String insertMember(@RequestBody Member member){
         memberService.insertMember(member);
-        return "redirect:/member/MemberList";
+        return "/MemberList";
     }
 
 }

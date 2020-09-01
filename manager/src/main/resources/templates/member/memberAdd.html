@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <script type="text/javascript" src="/layui/layui.js"></script>
+</head>
+<body>
+
+<form class="layui-form" id="meber" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">>会员姓名</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" autocomplete="off" placeholder="请输入会员姓名" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">会员年龄</label>
+        <div class="layui-input-block">
+            <input type="text" name="age" autocomplete="off" placeholder="请输入会员年龄" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">>工种类型</label>
+        <div class="layui-input-block">
+            <input type="text" name="work_type" autocomplete="off" placeholder="请输入工种类型" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">联系方式</label>
+        <div class="layui-input-block">
+            <input type="text" name="telephone" autocomplete="off" placeholder="请输入联系方式" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">>注册时间</label>
+        <div class="layui-input-block">
+            <input type="text" name="regist_time" autocomplete="off" placeholder="请选择注册时间" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">会员状态</label>
+        <div class="layui-input-block">
+            <input type="text" name="status" autocomplete="off" placeholder="请输入会员状态" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1" lay-event="add">保存</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript" th:inline="javascript">
+    //Demo
+    layui.use(['layer', 'form', 'element', 'jquery', 'laydate'], function () {
+        var laydate = layui.laydate;
+        var form = layui.form;
+        var table = layui.table;
+        var $ = layui.$;
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#startDate' //指定元素
+        });
+        laydate.render({
+            elem: '#endDate' //指定元素
+        });
+
+        //监听提交
+        form.on('submit(demo1)', function (data) {
+            layer.msg(JSON.stringify(data.field));
+            $.ajax({
+                async: true,//默认是true同步  异步改false
+                url: "/insertMember",//要访问的服务器地址
+                type: "POST", //访问方式（POST）
+                data: {"name": data.name},
+                /*{"age": data.age},
+              {"work_type": data.work_type},
+              {"telephone": data.telephone} ,
+              {"regist_time": data.regist_time},
+              {"status": data.status},*/
+                dataType: "json",
+                success: function (data) {
+                    //请求成功触发的回调
+                    console.log(data)
+                    if (data.code == 200) {
+                        layer.alert(data.msg, {icon: 6}, function (index) {
+                            //关闭当前frame
+                            layer.open(index);
+                        });
+                        obj.insertRow();//添加对应行（tr）的DOM结构，并更新缓存
+                    }
+                },
+                error: function (err) {
+                    //请求失败触发的回调
+                    console.log(err)
+                }
+            })
+            return false;
+        });
+    });
+
+
+</script>
+</body>
+</html>

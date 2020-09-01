@@ -3,8 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <title>会员信息的添加</title>
+    <style type="text/css">
+        body{ font-family: "微软雅黑"; background-color: #EDEDED; }
+        h2{ text-align: center;font-size:26px; }
+        table{ margin: 30px auto; text-align: center; border-collapse:collapse; width:50%; }
+        td, th{ padding: 7px;font-size:18px;}
+        hr{ margin-bottom:20px; border:1px solid #aaa; }
+        input,select,textarea{ width:284px; height:30px; background:#EDEDED; border:1px solid #999; text-indent:5px; font-size:18px; }
+        input[type='submit']{ width:130px; height:36px; cursor:pointer; border-radius:5px 5px 5px 5px; background:#ddd; }
+        select{text-indent:0px;}
+        textarea{height:100px;font-size:22px;}
+    </style>
 </head>
 <body>
-会员信息的添加
+
+<form action="insertMember" method="post">
+   <!-- <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">文本域</label>
+        <div class="layui-input-block">
+            <textarea placeholder="请输入姓名：" class="layui-textarea" name="desc"></textarea>
+        </div>
+    </div>-->
+
+   <!--<table border="1" align="center">
+        姓名：<tr><input type="text" value="name"></tr>
+        年龄：<tr><input type="text" value="age"></tr>
+       工种类型：<tr><input type="text" value="work_type"></tr>
+       电话号：<tr><input type="text" value="telephone"></tr>
+       注册时间：<tr><input type="text" value="regist_time"></tr>
+       会员状态：<tr><input type="text" value="status"></tr>
+                    <tr><button type="submit"></button></tr>
+
+   </table>-->
+
+    <table border="1">
+        <tr>
+            <td width="30%">会员姓名</td>
+            <td>
+                <input type="text" name="name"/>
+            </td>
+        </tr>
+        <tr>
+            <td>会员年龄</td>
+            <td>
+                <input type="text" name="age"/>
+            </td>
+        </tr>
+        <tr>
+            <td>工种类型</td>
+            <td>
+                <input type="text" name="work_type"/>
+            </td>
+
+        <tr>
+            <td>联系方式</td>
+            <td>
+                <input type="text" name="telephone"/>
+            </td>
+        </tr>
+
+        <tr>
+            <td>注册时间</td>
+            <td>
+                <input type="text" name="regist_time"/>
+            </td>
+        </tr>
+
+        <tr>
+            <td>会员状态</td>
+            <td>
+                <input type="text" name="status"/>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="提 	交"/>
+            </td>
+        </tr>
+    </table>
+</form>
 </body>
 </html>
