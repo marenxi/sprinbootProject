@@ -34,7 +34,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">>工种类型</label>
         <div class="layui-input-block">
-            <input type="text" name="work_type" autocomplete="off" placeholder="请输入工种类型" class="layui-input">
+            <input type="text" name="workType" autocomplete="off" placeholder="请输入工种类型" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
@@ -47,7 +47,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">>注册时间</label>
         <div class="layui-input-block">
-            <input type="text" name="regist_time" autocomplete="off" placeholder="请选择注册时间" class="layui-input">
+            <input type="text" name="registTime" autocomplete="off"  class="layui-input" id="startDate">
         </div>
     </div>
     <div class="layui-form-item">
@@ -104,7 +104,7 @@
                     if (data.code == 200) {
                         layer.alert(data.msg, {icon: 6}, function (index) {
                             //关闭当前frame
-                            layer.open(index);
+                            layer.close(index);
                         });
                         obj.insertRow();//添加对应行（tr）的DOM结构，并更新缓存
                     }
