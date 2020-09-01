@@ -47,7 +47,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">>注册时间</label>
         <div class="layui-input-block">
-            <input type="text" name="registTime" autocomplete="off"  class="layui-input" id="startDate">
+            <input type="text" name="registTime" autocomplete="off"  class="layui-input" id="registTime">
         </div>
     </div>
     <div class="layui-form-item">
@@ -73,8 +73,12 @@
         var table = layui.table;
         var $ = layui.$;
         //执行一个laydate实例
-        laydate.render({
-            elem: '#startDate' //指定元素
+        var startTime = laydate.render({
+            elem: '#registTime' //指定元素
+            , type: 'datetime'
+            //控件选择完毕后的回调点击日期、清空、现在、确定均会触发。
+            , done: function (value, date, endDate) {
+            }
         });
         laydate.render({
             elem: '#endDate' //指定元素

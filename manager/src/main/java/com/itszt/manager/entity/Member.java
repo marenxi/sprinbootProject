@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -17,6 +18,7 @@ public class Member {
     private Integer age;             /*年龄*/
     private String workType;         /*工种*/
     private String telephone;        /*电话*/
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date registTime;        /*注册日期*/
     private String  status;          /*会员状态*/
 }
