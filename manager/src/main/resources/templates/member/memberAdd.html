@@ -83,11 +83,15 @@
         //监听提交
         form.on('submit(demo1)', function (data) {
             layer.msg(JSON.stringify(data.field));
+            console.log(data.field);
+            console.log(JSON.stringify(data.field));
+            var requestData = $("#meber").serialize();
+            console.log(requestData)
             $.ajax({
                 async: true,//默认是true同步  异步改false
                 url: "/insertMember",//要访问的服务器地址
                 type: "POST", //访问方式（POST）
-                data: {"name": data.name},
+                data:requestData,
                 /*{"age": data.age},
               {"work_type": data.work_type},
               {"telephone": data.telephone} ,
