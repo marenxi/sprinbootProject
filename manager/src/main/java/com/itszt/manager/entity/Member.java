@@ -1,5 +1,6 @@
 package com.itszt.manager.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ public class Member {
     private Integer age;             /*年龄*/
     private String workType;         /*工种*/
     private String telephone;        /*电话*/
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date registTime;        /*注册日期*/
     private String  status;          /*会员状态*/
 }

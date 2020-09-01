@@ -69,7 +69,7 @@ public class MemberControl {
 
 
     @PostMapping("/insertMember")
-    public String insertMember(Member member){
+    public String insertMember(@RequestBody  Member member){
         memberService.insertMember(member);
         return "/MemberList";
     }
