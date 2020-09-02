@@ -1,18 +1,21 @@
 package com.itszt.manager.entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import lombok.NoArgsConstructor;
 
 /**
  * @Description: 返回数据通用实体
  * @author: marenxi@jiuxian.com
  * @date: 2018-12-15 20:17/星期六
  */
+@NoArgsConstructor
 @JsonInclude(Include.NON_NULL)
 public class DataResponse {
     private  Integer code;
-    private String msg;
+    private String msg="ok";
     private Integer count;
     private Object data;
+
     public Object getData() {
         return data;
     }
@@ -31,6 +34,9 @@ public class DataResponse {
 
     public String getMsg() {
         return msg;
+    }
+    public DataResponse(String msg) {
+        this.msg=msg;
     }
 
     public void setMsg(String msg) {

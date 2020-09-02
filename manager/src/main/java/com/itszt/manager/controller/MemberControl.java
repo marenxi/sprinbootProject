@@ -1,5 +1,6 @@
 package com.itszt.manager.controller;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.itszt.manager.entity.DataResponse;
 import com.itszt.manager.entity.Member;
 import com.itszt.manager.service.MemberService;
@@ -22,6 +23,7 @@ public class MemberControl {
         return "/member/member";
     }
 
+    //更新时页面数据的回显
     @RequestMapping("/findMemberById")
     @ResponseBody
     public List<Member> findMemberById( Integer id){
@@ -67,11 +69,32 @@ public class MemberControl {
         return mv;
     }
 
-
+    //会员信息的新增
     @PostMapping("/insertMember")
+    @ResponseBody
     public String insertMember(Member member){
         memberService.insertMember(member);
+        System.out.println("插入数据成功");
         return "/MemberList";
     }
+
+    //1.1会员信息更新页面的跳转（需要根据id查询显示出对应的会员信息）
+    @RequestMapping("/updateMember")
+    public String updateMemberById(Integer id,Model model){
+        /*ModelAndView mv=new ModelAndView();
+        mv.setViewName("member/memberEdit");*/
+        Member member = memberService.findMemberById(id);
+        System.out.println(member);
+        return "/member/memberEdit";
+    }
+
+    //1.2对会员信息进行更新并保存
+    @RequestMapping("doSaveMember")
+    @ResponseBody
+    public DataResponse doSaveMember(Member member){
+        memberService.updateMemberById(member);
+        return new DataResponse("save ok!");
+    }
+
 
 }

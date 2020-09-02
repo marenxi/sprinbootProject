@@ -34,4 +34,14 @@ public class MemberServiceImpl implements MemberService {
     public void insertMember(Member member) {
         memberMapper.insertMember(member);
     }
+
+    @Override
+    public void updateMemberById(Member member) {
+        memberMapper.updateMemberById(member);
+    }
+
+    @Override
+    public Member findMemberById(Integer id) {
+        return memberMapper.findMemberById(id);
+    }
 }
