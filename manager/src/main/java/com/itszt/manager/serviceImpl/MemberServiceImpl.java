@@ -36,8 +36,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updateMemberById(Member member) {
-        memberMapper.updateMemberById(member);
+    public int updateMemberById(Member member) {
+        int rows= memberMapper.updateMemberById(member);
+        System.out.println(rows);
+        return rows;
     }
 
     @Override

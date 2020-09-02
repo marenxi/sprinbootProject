@@ -17,6 +17,7 @@
     <select id="findAll" resultType="com.itszt.manager.entity.Member">
         SELECT id,name ,age,work_type workType,telephone,regist_time registTime,status
         FROM myssproject.member_manage
+
     </select>
 
 
@@ -36,7 +37,7 @@
     <!--会员信息的更新-->
     <update id="updateMemberById" parameterType="com.itszt.manager.entity.Member">
         UPDATE myssproject.member_manage
-        SET name=#{name},age=#{age},workType=#{workType},telephone=#{telephone},regist_time=#{registTime},status=#{status}
+        SET name=#{name},age=#{age},work_type=#{workType},telephone=#{telephone},regist_time=#{registTime},status=#{status}
         WHERE id=#{id}
     </update>
 

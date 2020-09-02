@@ -1,53 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>会员信息更新</title>
     <link rel="stylesheet" href="/layui/css/layui.css">
     <script type="text/javascript" src="/layui/layui.js"></script>
 </head>
 <body>
-<form class="layui-form" action="" lay-filter="member" id="member">
+<form class="layui-form" action="" lay-filter="member" id="updateMember">
+    <div class="layui-form-item">
+        <!--<label class="layui-form-label">会员编号</label>-->
+        <div class="layui-input-block">
+            <input type="hidden" name="id" lay-verify="required"  id="id" autocomplete="off" placeholder="请输入id" class="layui-input" th:value="${member.id}">
+        </div>
+    </div>
     <div class="layui-form-item">
         <label class="layui-form-label">姓名</label>
         <div class="layui-input-block">
-            <input type="text" name="name" lay-verify="required"  id="name" autocomplete="off" placeholder="请输入姓名" class="layui-input">
+            <input type="text" name="name" lay-verify="required"  id="name" autocomplete="off" placeholder="请输入姓名" class="layui-input" th:value="${member.name}">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">年龄</label>
         <div class="layui-input-block">
-            <input type="text" name="age"lay-verify="required"  id="age"    autocomplete="off" placeholder="请输入年龄" class="layui-input">
+            <input type="text" name="age"lay-verify="required"  id="age"    autocomplete="off" placeholder="请输入年龄" class="layui-input" th:value="${member.age}">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">工种</label>
         <div class="layui-input-block">
-            <input type="text" name="workType" lay-verify="required"  id="workType" autocomplete="off" placeholder="请输入工种" class="layui-input">
+            <input type="text" name="workType" lay-verify="required"  id="workType" autocomplete="off" placeholder="请输入工种" class="layui-input" th:value="${member.workType}">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">电话</label>
         <div class="layui-input-block">
-            <input type="text" name="telephone" lay-verify="required"  id="telephone" autocomplete="off" placeholder="请输入工种" class="layui-input">
+            <input type="text" name="telephone" lay-verify="required"  id="telephone" autocomplete="off" placeholder="请输入电话" class="layui-input" th:value="${member.telephone}">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">注册时间</label>
         <div class="layui-input-block">
-            <input type="text" name="registTime" lay-verify="required"  id="registTime" autocomplete="off" placeholder="请选择注册时间" class="layui-input">
+            <input type="text" name="registTime" lay-verify="required"  id="registTime" autocomplete="off" placeholder="请选择注册时间" class="layui-input" th:value="${member.registTime}">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">会员状态</label>
         <div class="layui-input-block">
-            <input type="text" name="status" lay-verify="required"  id="status"   autocomplete="off" placeholder="请输入会员状态" class="layui-input">
+            <input type="text" name="status" lay-verify="required"  id="status"   autocomplete="off" placeholder="请输入会员状态" class="layui-input" th:value="${member.status}">
         </div>
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
             <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">保存</button>
-         <!--  <button type="button" class="layui-btn layui-btn-normal" id="LAY-component-form-getval">取值</button>-->
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
         </div>
     </div>
@@ -60,7 +65,15 @@
         var form = layui.form;
         var table = layui.table;
         var $ = layui.$;
+
         //执行一个laydate实例
+        var startTime = laydate.render({
+            elem: '#registTime' //指定元素
+            , type: 'datetime'
+            //控件选择完毕后的回调点击日期、清空、现在、确定均会触发。
+            , done: function (value, date, endDate) {
+            }
+        });
         laydate.render({
             elem: '#startDate' //指定元素
         });
@@ -68,50 +81,56 @@
             elem: '#endDate' //指定元素
         });
 
-        form.render();
-        $.ajax({
-            type:"POST",
-            url:"/updateMember"+id,
-            data:data,
-            datatype:'json',
-            success:function(res){//res后台返回的数据
-                //layer插件---提示
-                layer.msg(res.msg);
-            }
 
-
-        });
 
         //监听提交
-        form.on('submit(demo1)', function (data) {
+            form.on('submit(demo1)', function (data) {
             layer.msg(JSON.stringify(data.field));
+            var requestData = $("#updateMember").serialize();
+                console.log(requestData);
+                $.ajax({
+                    async: true,//默认是true同步  异步改false
+                    url: "/doSaveMember",//要访问的服务器地址
+                    type: "POST", //访问方式（POST）
+                    data:  requestData,
+                    dataType: "json",
+                    success: function (data) {
+                        //请求成功触发的回调
+                        console.log(data);
+                        console.log(data.id);
+                        if (data.code == 200) {
+                            layer.alert(data.msg, {icon: 6}, function (index) {
+                                //关闭当前frame
+                                layer.close(index);
+                            });
+                           // obj.update();//更新对应行（tr）的DOM结构，并更新缓存
+                        }
+                    },
+                    error: function (err) {
+                        //请求失败触发的回调
+                        console.log(err)
+                    }
+                })
 
+           /* $.ajax({
+                type:"POST",
+                url:"/doSaveMember",
+                data:data,
+                datatype:'json',
+                success:function(data){//res后台返回的数据
+                    //layer插件---提示
+                    layer.msg(data.msg);
+                }
+
+
+            });*/
             return false;
         });
 
 
     });
 
-   /* layer.open({
-        type: 2
-        ,title: '编辑用户'
-        ,content: 'memberEdit.html'
-        ,maxmin: true
-        ,area: ['500px', '450px']
-        ,btn: ['确定', '取消']
-        ,yes: function(index, layero){
 
-        }
-        ,success: function(layero, index) {
-
-            // 方式一  其实就是获取的 子页面的 div
-            var div = layero.find('iframe').contents().find('#member');  // div.html() div里面的内容,不包含当前这个div
-            //测试
-            div.find("#name").val("小白");
-        }
-
-
-        });*/
 </script>
 </body>
 </html>

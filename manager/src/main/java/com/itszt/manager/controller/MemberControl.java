@@ -80,20 +80,23 @@ public class MemberControl {
 
     //1.1会员信息更新页面的跳转（需要根据id查询显示出对应的会员信息）
     @RequestMapping("/updateMember")
-    public String updateMemberById(Integer id,Model model){
-        /*ModelAndView mv=new ModelAndView();
-        mv.setViewName("member/memberEdit");*/
+    public ModelAndView updateMemberById(Integer id,Model model){
+        ModelAndView mv=new ModelAndView();
+        mv.setViewName("member/memberEdit");
         Member member = memberService.findMemberById(id);
         System.out.println(member);
-        return "/member/memberEdit";
+        mv.addObject("member",member);
+        //model.addAttribute("member1",member);
+        return mv;
     }
 
-    //1.2对会员信息进行更新并保存
-    @RequestMapping("doSaveMember")
+    //1.2对会员信息进行更新并保存至数据库
+    @RequestMapping("/doSaveMember")
     @ResponseBody
-    public DataResponse doSaveMember(Member member){
-        memberService.updateMemberById(member);
-        return new DataResponse("save ok!");
+    public String doSaveMember(Member member,Model model){
+        int rows = memberService.updateMemberById(member);
+        System.out.println(rows);
+        return "return:/MemberList";
     }
 
 
