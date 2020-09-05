@@ -4,6 +4,7 @@ package com.itszt.manager.service;
 
 import com.itszt.manager.entity.Member;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -25,4 +26,8 @@ public interface MemberService {
 
     //1.2会员信息的更新
     public  int  updateMemberById(Member member);
+
+    //根据时间段和任意会员的字段进行查询
+   // public List<Member> findByManyConditions(Object[] conditions);
+    public  List<Member> findByManyConditions(String startDate, String endDate, String name, String workType, String telephone, Integer age);
 }

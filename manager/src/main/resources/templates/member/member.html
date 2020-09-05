@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.springframework.org/schema/mvc">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -7,10 +7,10 @@
     <script type="text/javascript" src="layui/layui.js"></script>
 </head>
 <body>
-<form class="layui-form" action="">
+<form class="layui-form" id="findMember"  action="">
     <div class="layui-form-item">
         <div class="layui-inline">
-            <label class="layui-form-label">下单日期</label>
+            <label class="layui-form-label">会员注册日期</label>
             <div class="layui-input-inline" style="width: 200px;">
                 <input type="text" class="layui-input" id="startDate">
             </div>
@@ -21,13 +21,19 @@
         </div>
         <div class="layui-inline">
             <div class="layui-input-inline" style="width: 400px;">
-                <input type="text" name="search" placeholder="请输入姓名、电话号码、年龄、工种" autocomplete="off"
+                <input type="text" name="search"  id="name"  placeholder="请输入姓名" autocomplete="off"
+                       class="layui-input">
+                <input type="text" name="search"  id="telephone"  placeholder="请输入电话号码" autocomplete="off"
+                       class="layui-input">
+                <input type="text" name="search"  id="age"  placeholder="请输入年龄" autocomplete="off"
+                       class="layui-input">
+                <input type="text" name="search"  id="workType" placeholder="请输入工种" autocomplete="off"
                        class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <div class="layui-input-inline" style="width: 80px;">
-                <button class="layui-btn" lay-submit lay-filter="formDemo">查询</button>
+                <button class="layui-btn" lay-submit lay-filter="formDemo" id="searchMember">查询</button>
             </div>
         </div>
         <div class="layui-inline">
@@ -35,14 +41,11 @@
                 <a class="layui-btn" th:href="@{'/member/add'}" style="text-decoration: none">新增</a>
             </div>
         </div>
-        <div class="layui-inline">
-            <div class="layui-input-inline" style="width: 80px;">
-                <button class="layui-btn" lay-submit lay-filter="formDemo">删除</button>
-            </div>
-        </div>
+
     </div>
 </form>
 <table id="membertable" lay-filter="membertablefilter" align="center"></table>
+<!--<table id="membertable1" align="center"></table>-->
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="edit">修改</a>
     <a class="layui-btn layui-btn-xs" lay-event="update">审核</a>
@@ -58,26 +61,72 @@
         //执行一个laydate实例
         laydate.render({
             elem: '#startDate' //指定元素
+            ,type:'datetime'
+            , done: function (value, date, endDate) {
+            }
+
         });
         laydate.render({
             elem: '#endDate' //指定元素
+            ,type:'datetime'
+            , done: function (value, date, endDate) {
+            }
         });
         //监听提交
         form.on('submit(formDemo)', function (data) {
             layer.msg(JSON.stringify(data.field));
+            /*var requestData = $("#findMember").serialize();*/
+            var table1=layui.table;
+
+            $.ajax({
+                url:"/doMemberListBy",
+                type:'post',
+                data:
+                {
+                    "startDate":$("#startDate").val(),
+                    "endDate":$("#endDate").val(),
+                    "name":$("#name").val(),
+                    "age":$("#age").val(),
+                    "telephone":$("#telephone").val(),
+                    "workType":$("#workType").val(),
+                },
+                dataType: "json",
+                    success: function (data) {
+                        //请求成功触发的回调
+                        console.log(data)
+                        if (data.code == 200) {
+                            var d = data.data;
+
+                        }else{
+                            // errorResult();
+                        }
+                            /*layer.alert(data.msg, {icon: 6}, function (index) {
+                                //关闭当前frame
+                                layer.open(index);
+                            });
+                           // obj.insertRow();//添加对应行（tr）的DOM结构，并更新缓存
+                        }*/
+                    },
+                    error: function (err) {
+                        //请求失败触发的回调
+                        console.log(err)
+                    }
+
+            });
+
             return false;
         });
 
         var table = layui.table;
 
-        //第一个实例
-        table.render({
+        //第一个实例,查询出所有的会员并分页显示
+        var tableIns= table.render({
             elem: '#membertable'
             ,height: 312
             ,url: '/MemberList' //数据接口
             ,page: true //开启分页
             ,cols: [[ //表头
-                //{ type: 'text', fixed: 'left' },
+
                 {field: 'id', title: '序号', width: '10%'},
                 {field: 'name', title: '姓名', width: '10%'},
                 {field: 'age', title: '年龄', width: '10%'},
@@ -88,6 +137,20 @@
                 { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
 
             ]]
+        });
+
+        //var table1=layui.table;
+        //第二个实例，根据时间段及会员的字段列名查询出所有符合条件的记录
+        
+
+        tableIns.reload('membertable',{//表格数据的重载
+            where: { //设定异步数据接口的额外参数，任意设
+               url:'/doMemberListBy'
+
+            }
+            ,page: {
+                curr: 1 //重新从第 1 页开始
+            }
         });
 
         //监听工具条
@@ -104,7 +167,7 @@
                     var r=confirm("确认删除该行吗？");
                     if(r){
                         $.ajax({
-                            url:"http://localhost:8088/memberDelete/"+data.id,
+                            url:"/memberDelete/"+data.id,
                             type:"POST",
                             data:{_method:"DELETE", id:data.id},
                             dataType:"json",

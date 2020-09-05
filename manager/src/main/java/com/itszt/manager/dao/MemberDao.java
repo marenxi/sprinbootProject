@@ -4,8 +4,10 @@ package com.itszt.manager.dao;
 
 import com.itszt.manager.entity.Member;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -25,5 +27,9 @@ public interface MemberDao {
 
     //1.2会员信息的更新
     public  int updateMemberById(Member member);
+
+    //根据时间段和任意会员的字段进行查询
+    public  List<Member> findByManyConditions(@Param("startDate") String startTime, @Param("endDate") String endTime, @Param("name") String name, @Param("workType") String workType,
+                                              @Param("telephone") String telephone, @Param("age") Integer age);
 
 }

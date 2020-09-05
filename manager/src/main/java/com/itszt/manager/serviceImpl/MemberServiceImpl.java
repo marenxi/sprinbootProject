@@ -7,6 +7,7 @@ import com.itszt.manager.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -41,6 +42,12 @@ public class MemberServiceImpl implements MemberService {
         System.out.println(rows);
         return rows;
     }
+
+    @Override
+    public List<Member> findByManyConditions(String startDate, String endDate, String name, String workType, String telephone, Integer age) {
+        return memberMapper.findByManyConditions(startDate,endDate,name,workType,telephone,age);
+    }
+
 
     @Override
     public Member findMemberById(Integer id) {

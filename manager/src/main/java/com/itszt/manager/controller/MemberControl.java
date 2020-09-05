@@ -4,12 +4,14 @@ import ch.qos.logback.core.net.SyslogOutputStream;
 import com.itszt.manager.entity.DataResponse;
 import com.itszt.manager.entity.Member;
 import com.itszt.manager.service.MemberService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -99,5 +101,29 @@ public class MemberControl {
         return "return:/MemberList";
     }
 
+
+    //根据时间段和任意会员的字段进行会员信息的精准查询
+    @RequestMapping("/doMemberListBy")
+    @ResponseBody
+    public DataResponse fingMembersByManyConditions(String startDate,String endDate,String name,String workType,String telephone,Integer age){
+        DataResponse dataResponse = new DataResponse();
+        try {
+            List<Member> memberList = memberService.findByManyConditions(startDate,endDate,name,workType,telephone,age);
+            System.out.println("返回符合条件的会员数据集合:");
+            System.out.println(memberList);
+            dataResponse.setCode(0);
+            dataResponse.setData(memberList);
+            dataResponse.setCount(memberList.size());
+        }catch (Exception e){
+            dataResponse.setCode(0);
+            dataResponse.setData(null);
+            dataResponse.setCount(0);
+            System.out.println("e = " + e);
+            dataResponse.setMsg("您查找的会员信息不存在，请重新输入查询条件");
+        }
+        dataResponse.setMsg("");
+        return dataResponse;
+
+    }
 
 }
