@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:margin="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>98易工后台登录</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{layui/css/layui.css}"  media="all">
+</head>
+<style>
+    body{ text-align:center
+        background:#f0f0f0; color:#2F4056;
+    }
+    #login{ margin:0 auto; width:400px; height:100px; border:1px}
+</style>
+<body>
+<br />
+<br />
+<h2 align="center">欢迎访问98易工用户管理系统</h2>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<div id="login" >
+<form class="form-horizontal" th:action="@{/doLogin}" method="get" >
+    <div class="layui-inline">
+    <div class="layui-form-item">
+        <label class="layui-form-label">输入框</label>
+        <div class="layui-input-block">
+            <input type="text" name="userName" lay-verify="title" autocomplete="off" placeholder="用户名" required="true" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">密码框</label>
+        <div class="layui-input-block">
+            <input type="password" name="userPwd" placeholder="请输入密码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">验证码</label>
+        <div class="layui-input-block">
+            <input type="text" name="verifyCode" placeholder="验证码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+        </div>
+    </div>
+    </div>
+</form>
+</div>
+<script>
+   $(function AjaxPostData(){
+       var username=$("userName").val();//获取姓名
+       var password=$("userPwd").val();//获取密码
+       var verity=$("verifyCode").val();//获取验证码
+       var chk = $("input[type='checkbox']").prop("checked"); //获取是否选中如果选中chk为true否则为false
+
+        $.ajax({
+
+            type:"post",
+            data:{
+                username:userName,
+                userPwd:userPwd,
+                verity:verifyCode},
+            url:"/doLogin",
+            dataType:"json",
+            success:function (data) {
+                alert(data.username);
+
+
+            }
+        });
+
+
+   });
+
+
+</script>
+</body>
+</html>
