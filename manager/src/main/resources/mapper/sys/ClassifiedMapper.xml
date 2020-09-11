@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itszt.manager.dao.ClassfiedDao">
+    <!--1.查询所有的分类信息-->
+    <select id="findObjects" resultType="map">
+      SELECT c1.*,c2.classfiedName parentName
+      FROM myssproject.classfied_manage c1
+      LEFT JOIN myssproject.classfied_manage c2
+      ON c1.parentId=c2.id
+
+    </select>
+
+    <!--2.1根据id查询出任意节点处是否还有下级-->
+    <select id="findRowsById" parameterType="int" resultType="int">
+        SELECT count(*)
+        FROM myssproject.classfied_manage
+        WHERE parentId=#{id}
+    </select>
+
+    <!--2.1根据id删除信息-->
+    <delete id="deleteNodeById" parameterType="int">
+        DELETE FROM myssproject.classfied_manage
+        WHERE id=#{id}
+    </delete>
+
+    <!--3。点击上级添加下级名称-->
+    <insert id="addSubName" >
+     INSERT  into myssproject.classfied_manage
+     (classfiedName,parentId)VALUES(#{classfiedName},#{parentId})
+    </insert>
+</mapper>

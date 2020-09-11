@@ -1,6 +1,7 @@
 package com.itszt.manager.entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 /**
@@ -11,11 +12,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonInclude(Include.NON_NULL)
 public class DataResponse {
-    private  Integer code;
+    private  Integer code=0;
     private String msg="ok";
     private Integer count;
     private Object data;
 
+    public DataResponse(Object object){this.data=data;}
+    public DataResponse(Throwable e){this.code=0;this.msg=e.getMessage();}
     public Object getData() {
         return data;
     }

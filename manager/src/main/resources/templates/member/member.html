@@ -134,7 +134,7 @@
                 {field: 'telephone', title: '电话', width: '10%'},
                 {field: 'registTime', title: '注册日期', width: '10%'},
                 {field: 'status', title: '状态', width: '10%'},
-                { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
+                { fixed: 'right', title: '操作', toolbar: '#barDemo', width: '150px' }
 
             ]]
         });
@@ -178,9 +178,8 @@
 ;
                     }
 
-
                 obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                    layer.close(index);
+               layer.close(index);
                     //向服务端发送删除指令
                 });
             } else if(layEvent === 'edit'){ //编辑
