@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itszt.manager.dao.OrderDao">
+    <select id="findAllOrderList" resultType="com.itszt.manager.entity.Order">
+    SELECT *
+    FROM myssproject.order_manage
+    </select>
+
+    <insert id="insertOrder" parameterType="com.itszt.manager.entity.Order" >
+        insert into myssproject.order_manage(orderId,talentName,workMenuId,workType,workTime,orderAmount,orderStatus,orderTime)
+        VALUES(#{orderId},#{talentName},#{workMenuId},#{workType},#{workTime},#{orderAmount},#{orderStatus},#{orderTime})
+
+    </insert>
+
+    <select id="findOrderByConditions" resultType="com.itszt.manager.entity.Order">
+        SELECT *
+        FROM myssproject.order_manage
+        <where>
+            <if test="startTime!=null and startTime!='' ">
+                <![CDATA[ and orderTime>= #{startTime}  ]]>
+            </if>
+            <if test="endTime!=null and endTime!='' "  >
+                <![CDATA[ and orderTime<= #{endTime}  ]]>
+            </if>
+            <if test="orderId!=null and orderId!=''  ">
+                and  orderId=#{orderId}
+            </if>
+            <if test="workMenuId!=null and workMenuId!=''">
+                and workMenuId=#{workMenuId}
+            </if>
+            <if test="talentName!=null and talentName!=''">
+                and  talentName=#{talentName}
+            </if>
+            <if test="workType!=null and workType!=''">
+                and workType=#{workType}
+            </if>
+        </where>
+
+    </select>
+
+
+    <!--点选不同的订单状态去查询数据-->
+    <select id="findOrderByOrderStatus" resultType="com.itszt.manager.entity.Order">
+        SELECT *
+        FROM myssproject.order_manage
+        WHERE orderStatus=#{orderStatus}
+
+    </select>
+</mapper>
