@@ -56,12 +56,25 @@ public class ClassifiedController {
     }
 
     /*根据点击添加下级和*/
-    @RequestMapping("insertMenu/{classfiedName}/{parentId}")
+    @RequestMapping(value = "insertMenu/{classfiedName}/{parentId}",method = RequestMethod.POST)
     @ResponseBody
-    public String doInsertMenu(@PathVariable String classfiedName,@PathVariable Integer parentId){
+    public DataResponse doInsertMenu(@PathVariable String classfiedName,@PathVariable Integer parentId){
         DataResponse response=new DataResponse();
         service.addSubName(classfiedName,parentId);
         response.setMsg("您新增的下级是："+classfiedName);
-        return  "redirect:/fingClassifiedObjects";
+        return  response;
+    }
+
+    /*根据分类名称来查找员工及其所有的父节点*/
+    @RequestMapping("findWorkerByClassfy")
+    @ResponseBody
+    public DataResponse findWorkerByClassfy(String classfiedName){
+        DataResponse dataResponse = new DataResponse();
+        List<Map<String, Object>> list = service.findObjectsByClassFy(classfiedName);
+        System.out.println(list);
+        dataResponse.setData(list);
+        dataResponse.setCount(list.size());
+        dataResponse.setMsg("ok");
+        return dataResponse;
     }
 }

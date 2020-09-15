@@ -17,14 +17,16 @@
     <form class="layui-form-item">
         <div class="layui-inline">
             <div class="layui-input-inline" style="width: 400px;">
-                <input type="text" name="search" placeholder="请输入工种名称" autocomplete="off"
+                <input type="text" name="edt-search" id="edt-search" placeholder="请输入分类工种名称" autocomplete="off"
                        class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
             <div class="layui-input-inline" style="width: 80px;">
-                <button class="layui-btn" lay-submit lay-filter="formDemo">查询</button>
+                <button class="layui-btn" id="btn-search"  lay-submit lay-filter="formDemo"><i class="layui-icon">&#xe615;</i>查询</button>
             </div>
+
+
         </div>
         <div class="layui-inline">
         <div class="layui-input-inline" style="width: 80px;">
@@ -42,7 +44,7 @@
     <br/>
     <br/>
 <div class="demo-side">
-    <table id="demoTreeTb"></table>
+    <table id="demoTreeTb" lay-filter="tableOne"></table>
 </div>
     <script type="text/html" id="tbBar">
         <div class="layui-btn-group">   <!--th:href="@{'/doAddDownMenu'}"-->
@@ -69,10 +71,12 @@
         // 渲染表格
         var insTb = treeTable.render({
             elem: '#demoTreeTb',
-            url: 'fingClassifiedObjects',
+            url: 'findWorkerByClassfy',
+            id: 'idTest',
             toolbar: 'default',
             height: 'full-200',
             icon_key: 'classfiedName',
+            treeDefaultClose: true,
             tree: {
                 iconIndex: 2,
                 isPidData: true,
@@ -163,7 +167,7 @@
 
                             $.ajax({
                                 async: true,//默认是true同步  异步改false
-                                url: "/insertMenu/" + $("#name").val() + "/" + data.parent.id,//要访问的服务器地址
+                                url: "/insertMenu/" + $("#name").val() + "/" + data.id,//要访问的服务器地址
                                 type: "POST", //访问方式（POST）
                                 data: {_method: "INSERT", id: data.id},
                                 dataType: "json",
@@ -193,92 +197,106 @@
 
 
             }
-            ;
 
-            // 头部工具栏点击事件
-            treeTable.on('toolbar(demoTreeTb)', function (obj) {
-                switch (obj.event) {
-                    case 'add':
-                        layer.msg('添加');
-                        break;
-                    case 'delete':
-                        layer.msg('删除');
-                        break;
-                    case 'update':
-                        layer.msg('编辑');
-                        break;
-                    case 'LAYTABLE_TIPS':
-                        layer.msg('提示');
-                        break;
-                }
-            });
 
-            // 全部展开
-            $('#btnExpandAll').click(function () {
-                insTb.expandAll();
-            });
-
-            // 全部折叠
-            $('#btnFoldAll').click(function () {
-                insTb.foldAll();
-            });
-
-            // 展开指定
-            $('#btnExpand').click(function () {
-                insTb.expand(2);
-            });
-
-            // 折叠指定
-            $('#btnFold').click(function () {
-                insTb.fold(2);
-            });
-
-            // 设置选中
-            $('#btnChecked').click(function () {
-                insTb.expand(4);
-                insTb.setChecked([4]);
-            });
-
-            // 搜索
-            $('#btnSearch').click(function () {
-                var keywords = $('#edtSearch').val();
-                if (keywords) {
-                    insTb.filterData(keywords);
-                } else {
-                    insTb.clearFilter();
-                }
-            });
-
-            // 清除搜索
-            $('#btnClearSearch').click(function () {
-                insTb.clearFilter();
-            });
-
-            // 重载
-            $('#btnReload').click(function () {
-                insTb.reload();
-            });
-            $('#btnRefresh').click(function () {
-                insTb.refresh();
-            });
-
-            // 获取选中
-            $('#btnGetChecked').click(function () {
-                layer.alert('<pre>' + JSON.stringify(insTb.checkStatus().map(function (d) {
-                    return {
-                        authorityName: d.authorityName,
-                        authorityId: d.authorityId,
-                        LAY_INDETERMINATE: d.LAY_INDETERMINATE
-                    };
-                }), null, 3) + '</pre>');
-            });
-
-            // 演示侧边栏
-            $('#btnToggleSide').click(function () {
-                $('.demo-side').toggleClass('show');
-            });
 
         })
+        // 头部工具栏点击事件
+        treeTable.on('toolbar(demoTreeTb)', function (obj) {
+            switch (obj.event) {
+                case 'add':
+                    layer.msg('添加');
+                    break;
+                case 'delete':
+                    layer.msg('删除');
+                    break;
+                case 'update':
+                    layer.msg('编辑');
+                    break;
+                case 'LAYTABLE_TIPS':
+                    layer.msg('提示');
+                    break;
+            }
+        });
+
+        // 搜索
+        $('#btn-search').click(function () {
+            var keywords = $('#edt-search').val();
+            alert(keywords)
+            if (keywords){
+                insTb.reload('idTest', {
+                    url: "findWorkerByClassfy/"+keywords,
+                    where: {
+                        classfiedName: keywords },
+                    //设定异步数据接口的额外参数
+                    //,height: 300
+                });
+
+                insTb.filterData(keywords);
+            }else {
+                insTb.clearFilter();
+            }
+
+        });
+
+
+        // 清除搜索
+        $('#btn-search').click(function () {
+            insTb.clearFilter();
+        });
+
+
+        // 全部展开
+        $('#btnExpandAll').click(function () {
+            insTb.expandAll();
+        });
+
+        // 全部折叠
+        $('#btnFoldAll').click(function () {
+            insTb.foldAll();
+        });
+
+        // 展开指定
+        $('#btnExpand').click(function () {
+            insTb.expand(2);
+        });
+
+        // 折叠指定
+        $('#btnFold').click(function () {
+            insTb.fold(2);
+        });
+
+        // 设置选中
+        $('#btnChecked').click(function () {
+            insTb.expand(4);
+            insTb.setChecked([4]);
+        });
+
+
+        // 重载
+        $('#btnReload').click(function () {
+            insTb.reload();
+        });
+        $('#btnRefresh').click(function () {
+            insTb.refresh();
+        });
+
+        // 获取选中
+        $('#btnGetChecked').click(function () {
+            layer.alert('<pre>' + JSON.stringify(insTb.checkStatus().map(function (d) {
+                return {
+                    authorityName: d.authorityName,
+                    authorityId: d.authorityId,
+                    LAY_INDETERMINATE: d.LAY_INDETERMINATE
+                };
+            }), null, 3) + '</pre>');
+        });
+
+        // 演示侧边栏
+        $('#btnToggleSide').click(function () {
+            $('.demo-side').toggleClass('show');
+        });
+
     })
 </script>
 

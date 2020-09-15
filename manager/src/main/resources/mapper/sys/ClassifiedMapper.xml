@@ -25,9 +25,22 @@
         WHERE id=#{id}
     </delete>
 
-    <!--3。点击上级添加下级名称-->
+    <!--3.点击上级添加下级名称-->
     <insert id="addSubName" >
      INSERT  into myssproject.classfied_manage
      (classfiedName,parentId)VALUES(#{classfiedName},#{parentId})
     </insert>
+
+    <!--4.根据分类名称来查询分类树，显示该分类名称信息及其所有的父子节点信息*-->
+    <select id="findObjectsByClassFy" parameterType="String" resultType="map">
+    SELECT c1.*,c2.classfiedName parentName
+    FROM myssproject.classfied_manage c1
+    LEFT JOIN myssproject.classfied_manage c2
+    ON c1.parentId=c2.id
+    <where>
+    <if test="classfiedName!=null and classfiedName!=''">
+     classfiedName=#{classfiedName}
+    </if>
+    </where>
+    </select>
 </mapper>

@@ -21,4 +21,7 @@ public interface ClassfiedDao {
 
     /*点击添加下级按钮，添加下级名称到数据库*/
      int addSubName(@Param("classfiedName") String classfiedNames,@Param("parentId") Integer parentId);
+
+     /*根据工种名称来查询分类树，显示该工种及所有的父子节点*/
+     List<Map<String,Object>> findObjectsByClassFy(String classfiedName);
 }

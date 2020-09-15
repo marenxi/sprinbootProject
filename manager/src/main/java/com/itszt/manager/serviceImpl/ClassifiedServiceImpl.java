@@ -42,4 +42,9 @@ public class ClassifiedServiceImpl implements ClassifiedService {
     public int addSubName(String classfiedName,Integer parentId) {
         return classfiedDao.addSubName(classfiedName,parentId);
     }
+
+    @Override
+    public List<Map<String, Object>> findObjectsByClassFy(String classfiedName) {
+        return classfiedDao.findObjectsByClassFy(classfiedName);
+    }
 }
