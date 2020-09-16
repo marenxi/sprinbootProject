@@ -61,10 +61,11 @@
         base: 'layui/'
     }).extend({
         treeTable: 'module/treeTable'
-    }).use(['layer', 'util', 'treeTable'], function () {
+    }).use(['layer', 'util', 'treeTable','form'], function () {
         var $ = layui.jquery;
         var layer = layui.layer;
         var util = layui.util;
+        var form = layui.form;
         var treeTable = layui.treeTable;
         $('body').removeClass('layui-hide');
 
@@ -220,23 +221,19 @@
         });
 
         // 搜索
-        $('#btn-search').click(function () {
-            var keywords = $('#edt-search').val();
-            alert(keywords)
-            if (keywords){
-                insTb.reload('idTest', {
-                    url: "findWorkerByClassfy/"+keywords,
-                    where: {
-                        classfiedName: keywords },
-                    //设定异步数据接口的额外参数
-                    //,height: 300
-                });
-
-                insTb.filterData(keywords);
-            }else {
-                insTb.clearFilter();
-            }
-
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            var keyword = $('#edt-search').val();
+            insTb.reload({
+                elem: '#demoTreeTb',
+                where: {"classfiedName":keyword},
+                data:data.data,
+                id: 'idTest',
+                done: function () {
+                    insTb.expandAll();
+                }
+            });
+            return false;
         });
 
 

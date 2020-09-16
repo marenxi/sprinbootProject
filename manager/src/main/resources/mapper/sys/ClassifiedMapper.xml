@@ -39,7 +39,7 @@
     ON c1.parentId=c2.id
     <where>
     <if test="classfiedName!=null and classfiedName!=''">
-     classfiedName=#{classfiedName}
+     c1.classfiedName=#{classfiedName} or c2.classfiedName=#{classfiedName}
     </if>
     </where>
     </select>
