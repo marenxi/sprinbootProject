@@ -23,12 +23,6 @@
             <div class="layui-input-inline" style="width: 400px;">
                 <input type="text" name="search"  id="name"  placeholder="请输入姓名" autocomplete="off"
                        class="layui-input">
-                <input type="text" name="search"  id="telephone"  placeholder="请输入电话号码" autocomplete="off"
-                       class="layui-input">
-                <input type="text" name="search"  id="age"  placeholder="请输入年龄" autocomplete="off"
-                       class="layui-input">
-                <input type="text" name="search"  id="workType" placeholder="请输入工种" autocomplete="off"
-                       class="layui-input">
             </div>
         </div>
         <div class="layui-inline">
@@ -93,19 +87,29 @@
                 dataType: "json",
                     success: function (data) {
                         //请求成功触发的回调
-                        console.log(data)
+                        console.log(data.data)
+                        table.render({
+                            elem: '#membertable'
+                            ,height: 465
+                            ,data:data.data
+                            ,page: true //开启分页
+                            ,cols: [[ //表头
+                                {field: 'id', title: '序号', width: '10%'},
+                                {field: 'name', title: '姓名', width: '10%'},
+                                {field: 'age', title: '年龄', width: '10%'},
+                                {field: 'workType', title: '工种', width: '10%'},
+                                {field: 'telephone', title: '电话', width: '10%'},
+                                {field: 'registTime', title: '注册日期', width: '10%'},
+                                {field: 'status', title: '状态', width: '10%'},
+                                { fixed: 'right', title: '操作', toolbar: '#barDemo', width: '150px' }
+                            ]]
+                        });
                         if (data.code == 200) {
                             var d = data.data;
 
                         }else{
                             // errorResult();
                         }
-                            /*layer.alert(data.msg, {icon: 6}, function (index) {
-                                //关闭当前frame
-                                layer.open(index);
-                            });
-                           // obj.insertRow();//添加对应行（tr）的DOM结构，并更新缓存
-                        }*/
                     },
                     error: function (err) {
                         //请求失败触发的回调
@@ -122,7 +126,7 @@
         //第一个实例,查询出所有的会员并分页显示
         var tableIns= table.render({
             elem: '#membertable'
-            ,height: 312
+            ,height: 465
             ,url: '/MemberList' //数据接口
             ,page: true //开启分页
             ,cols: [[ //表头
