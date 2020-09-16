@@ -17,7 +17,7 @@ public class ClassifiedController {
 
     @GetMapping("/classified")
     public String order() {
-        System.out.println("返回会员管理页面");
+        System.out.println("返回分类管理页面");
         return "/classified/classified";
     }
 
