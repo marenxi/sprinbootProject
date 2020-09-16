@@ -39,7 +39,8 @@
     <div style="margin:9px 150px">
         <tr>
             <th>
-                <button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit lay-filter="btnDemo">全部</button>
+                <button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit lay-filter="btnDemo">全部
+                </button>
             </th>
             <th>
                 <button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit lay-filter="btnDemo">待确认
@@ -125,38 +126,6 @@
                 //设定异步数据接口的额外参数
                 //,height: 300
             });
-           /* $.ajax({
-                url: "/order/findOrderByConditions",
-                type: 'post',
-                data:
-                    {
-                        "startTime": $("#startTime").val(),
-                        "endTime": $("#endTime").val(),
-                        "orderId": conditions,
-                        "talentName": conditions,
-                        "workType": conditions,
-                        "workMenuId": conditions
-
-                    },
-                dataType: "json",
-                success: function (data) {
-                    //请求成功触发的回调
-                    console.log(data)
-                    if (data.code == 200) {
-                        var d = data.data;
-
-                    } else {
-                        // errorResult();
-                    }
-
-                },
-                error: function (err) {
-                    //请求失败触发的回调
-                    console.log(err)
-                }
-
-            });*/
-
             return false;
         });
 
@@ -166,36 +135,16 @@
 
             $(document).on('click', 'button', function () {
                 var orderStatus = $(this).text().trim();
-                if(orderStatus=="全部") {orderStatus=null;}
+                if (orderStatus == "全部") {
+                    orderStatus = null;
+                }
                 //alert(orderStatus);
                 table.reload('idTest', {
                     url: "/order/findOrderByStatus"
-                    , where: {"orderStatus": orderStatus },
+                    , where: {"orderStatus": orderStatus},
                     //设定异步数据接口的额外参数
                     //,height: 300
                 });
-                /* $.ajax({
-                     url: "/order/findOrderByStatus",
-                     type: 'get',
-                     data:
-                         {"orderStatus": orderStatus},
-                     dataType: "json",
-                     success: function (data) {
-                         //请求成功触发的回调
-                         console.log(data)
-                         if (data.code == 200) {
-                             var d = data.data;
-                         } else {
-                             // errorResult();
-                         }
-
-                     },
-                     error: function (err) {
-                         //请求失败触发的回调
-                         console.log(err)
-                     }
-
-                 });*/
                 return false;
             });
         });
