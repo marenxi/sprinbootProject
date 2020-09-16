@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.springframework.org/schema/mvc">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -7,17 +7,53 @@
     <script type="text/javascript" src="/layui/layui.js"></script>
 </head>
 <body>
-<form class="layui-form" action="">
+<form class="layui-form" action="" id="order">
     <div class="layui-form-item">
-        <label class="layui-form-label">新增订单的订单号</label>
+        <label class="layui-form-label">新增订单号</label>
         <div class="layui-input-block">
-            <input type="text" name="orderCode" autocomplete="off" placeholder="请输入订单号" class="layui-input">
+            <input type="text" name="orderId" autocomplete="off" placeholder="请输入订单号" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">达人名称</label>
         <div class="layui-input-block">
-            <input type="text" name="workname" autocomplete="off" placeholder="请输入达人名称" class="layui-input">
+            <input type="text" name="talentName" autocomplete="off" placeholder="请输入达人名称" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">工单编号</label>
+        <div class="layui-input-block">
+            <input type="text" name="workMenuId" autocomplete="off" placeholder="请输入工单编号" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">工种</label>
+        <div class="layui-input-block">
+            <input type="text" name="workType" autocomplete="off" placeholder="请输入工种" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">工作时间</label>
+        <div class="layui-input-block">
+            <input type="text" name="workTime" id="workTime" autocomplete="off" placeholder="请选择工作时间" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">订单金额</label>
+        <div class="layui-input-block">
+            <input type="text" name="orderAmount" autocomplete="off" placeholder="请输入订单金额" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">订单状态</label>
+        <div class="layui-input-block">
+            <input type="text" name="orderStatus" autocomplete="off" placeholder="请输入订单状态" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">下单时间</label>
+        <div class="layui-input-block">
+            <input type="text" name="orderTime" id="orderTime" autocomplete="off" placeholder="请选择下单时间" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
@@ -38,13 +74,62 @@
         //执行一个laydate实例
         laydate.render({
             elem: '#startDate' //指定元素
+            ,type: 'datetime'
         });
         laydate.render({
             elem: '#endDate' //指定元素
+            ,type: 'datetime'
+
         });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#workTime' //指定元素
+            , type: 'datetime'
+            //控件选择完毕后的回调点击日期、清空、现在、确定均会触发。
+            , done: function (value, date, endDate) {
+            }
+        });
+
+        laydate.render({
+            elem: '#orderTime' //指定元素
+            , type: 'datetime'
+            //控件选择完毕后的回调点击日期、清空、现在、确定均会触发。
+            , done: function (value, date, endDate) {
+            }
+        });
+
+
         //监听提交
         form.on('submit(demo1)', function (data) {
             layer.msg(JSON.stringify(data.field));
+            console.log(JSON.stringify(data.field));
+            var requestData = $("#order").serialize();
+            console.log(requestData);
+            $.ajax({
+                async: true,//默认是true同步  异步改false
+                url: "/order/insertOrder",//要访问的服务器地址
+                type: "POST", //访问方式（POST）
+                data:requestData,
+                dataType: "json",
+                success: function (data) {
+                    //请求成功触发的回调
+                    console.log(data)
+                    if (data.code == 200) {
+                        layer.alert(data.msg, {icon: 6}, function (index) {
+                            //关闭当前frame
+                            layer.close(index);
+                        });
+                        obj.insertRow();//添加对应行（tr）的DOM结构，并更新缓存
+                    }
+                },
+                error: function (err) {
+                    //请求失败触发的回调
+                    console.log(err)
+                }
+
+            })
+
             return false;
         });
 

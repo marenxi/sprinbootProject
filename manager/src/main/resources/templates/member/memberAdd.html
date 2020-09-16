@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.springframework.org/schema/mvc">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -90,13 +90,12 @@
             console.log(data.field);
             console.log(JSON.stringify(data.field));
             var requestData = $("#meber").serialize();
-            console.log(requestData)
+            console.log(requestData);
             $.ajax({
                 async: true,//默认是true同步  异步改false
                 url: "/insertMember",//要访问的服务器地址
                 type: "POST", //访问方式（POST）
                 data:requestData,
-
                 dataType: "json",
                 success: function (data) {
                     //请求成功触发的回调
@@ -113,6 +112,7 @@
                     //请求失败触发的回调
                     console.log(err)
                 }
+
             })
             return false;
         });
