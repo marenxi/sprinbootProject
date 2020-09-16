@@ -3,11 +3,13 @@ package com.itszt.manager.controller;
 import com.itszt.manager.entity.DataResponse;
 import com.itszt.manager.entity.Order;
 import com.itszt.manager.service.OrderService;
+import jdk.nashorn.internal.ir.RuntimeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import sun.misc.Request;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -83,8 +85,8 @@ public class OrderController {
         return response;
     }
 
-    /*根据时间和输入框字段进行查询*/
-    @PostMapping("findOrderByConditions")
+    /*根据时间段和输入框字段进行查询*/
+    @GetMapping(value = "findOrderByConditions")
     @ResponseBody
     public DataResponse findOrderByConditions(String startTime,String endTime, String orderId,
                                               String talentName, String workMenuId, String workType ){
@@ -101,7 +103,7 @@ public class OrderController {
     /*根据订单的状态查询订单信息*/
     @RequestMapping("findOrderByStatus")
     @ResponseBody
-    public DataResponse findOrderByStatus(String orderStatus){
+        public DataResponse findOrderByStatus(String orderStatus){
         DataResponse response=new DataResponse();
         List<Order> orderList = orderService.findOrderByOrderStatus(orderStatus);
         response.setData(orderList);

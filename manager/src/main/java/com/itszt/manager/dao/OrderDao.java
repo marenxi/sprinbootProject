@@ -23,5 +23,8 @@ public interface OrderDao {
                                       @Param("workMenuId") String workMenuId,@Param("workType")String workType);
 
    /*根据订单状态来查询订单信息*/
-   public List<Order> findOrderByOrderStatus(String orderStatus);
+   public List<Order> findOrderByOrderStatus(@Param("orderStatus") String orderStatus);
+
+
+
 }

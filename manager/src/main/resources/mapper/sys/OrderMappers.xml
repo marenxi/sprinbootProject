@@ -25,27 +25,24 @@
                 <![CDATA[ and orderTime<= #{endTime}  ]]>
             </if>
             <if test="orderId!=null and orderId!=''  ">
-                and  orderId=#{orderId}
+                and  (orderId=#{orderId} or workMenuId=#{workMenuId} or talentName=#{talentName} or workType=#{workType})
             </if>
-            <if test="workMenuId!=null and workMenuId!=''">
-                and workMenuId=#{workMenuId}
-            </if>
-            <if test="talentName!=null and talentName!=''">
-                and  talentName=#{talentName}
-            </if>
-            <if test="workType!=null and workType!=''">
-                and workType=#{workType}
-            </if>
+
         </where>
 
     </select>
 
 
     <!--点选不同的订单状态去查询数据-->
-    <select id="findOrderByOrderStatus" resultType="com.itszt.manager.entity.Order">
+    <select id="findOrderByOrderStatus" resultType="com.itszt.manager.entity.Order" parameterType="String">
         SELECT *
         FROM myssproject.order_manage
-        WHERE orderStatus=#{orderStatus}
+        <where>
+            <if test="orderStatus!=null and orderStatus!=''" >
+                orderStatus=#{orderStatus}
+            </if>
+        </where>
+
 
     </select>
 </mapper>

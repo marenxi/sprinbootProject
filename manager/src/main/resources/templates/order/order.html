@@ -32,21 +32,47 @@
         </div>
         <div class="layui-inline">
             <div class="layui-input-inline" style="width: 80px;">
-            <a class="layui-btn" th:href="@{'/order/add'}" style="text-decoration: none">新增订单</a>
+                <a class="layui-btn" th:href="@{'/order/add'}" style="text-decoration: none">新增订单</a>
             </div>
         </div>
     </div>
     <div style="margin:9px 150px">
         <tr>
-            <th><button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit lay-filter="btnDemo">全部</button></th>
-            <th><button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit lay-filter="btnDemo" >待确认</button></th>
-            <th><button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit lay-filter="btnDemo">待到达</button></th>
-            <th><button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit  lay-filter="btnDemo">待完工</button></th>
-            <th><button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit lay-filter="btnDemo">待验收</button></th>
-            <th><button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit  lay-filter="btnDemo">已取消</button></th>
-            <th><button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit  lay-filter="btnDemo">待评价</button></th>
-            <th><button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit lay-filter="btnDemo">已结束</button></th>
-            <th><button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit lay-filter="btnDemo">异常</button></th>
+            <th>
+                <button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit lay-filter="btnDemo">全部</button>
+            </th>
+            <th>
+                <button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit lay-filter="btnDemo">待确认
+                </button>
+            </th>
+            <th>
+                <button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit lay-filter="btnDemo">待到达
+                </button>
+            </th>
+            <th>
+                <button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit lay-filter="btnDemo">待完工
+                </button>
+            </th>
+            <th>
+                <button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit lay-filter="btnDemo">待验收
+                </button>
+            </th>
+            <th>
+                <button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit lay-filter="btnDemo">已取消
+                </button>
+            </th>
+            <th>
+                <button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit lay-filter="btnDemo">待评价
+                </button>
+            </th>
+            <th>
+                <button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit lay-filter="btnDemo">已结束
+                </button>
+            </th>
+            <th>
+                <button type="button" class="layui-btn layui-btn-sm" width="10%" lay-submit lay-filter="btnDemo">异常
+                </button>
+            </th>
         </tr>
 
     </div>
@@ -61,7 +87,7 @@
 </script>
 <script type="text/javascript" th:inline="javascript">
     //Demo
-    layui.use(['layer', 'form', 'element', 'jquery', 'laydate','table'], function () {
+    layui.use(['layer', 'form', 'element', 'jquery', 'laydate', 'table'], function () {
         var laydate = layui.laydate;
         var form = layui.form;
         var table = layui.table;
@@ -86,7 +112,20 @@
             var $ = layui.$;
             var conditions = $("#conditions").val();
             /*alert($("#btn1").text())*/
-            $.ajax({
+            table.reload('idTest', {
+                url: "/order/findOrderByConditions"
+                , where: {
+                    "startTime": $("#startTime").val(),
+                    "endTime": $("#endTime").val(),
+                    "orderId": conditions,
+                    "talentName": conditions,
+                    "workType": conditions,
+                    "workMenuId": conditions
+                },
+                //设定异步数据接口的额外参数
+                //,height: 300
+            });
+           /* $.ajax({
                 url: "/order/findOrderByConditions",
                 type: 'post',
                 data:
@@ -116,7 +155,7 @@
                     console.log(err)
                 }
 
-            });
+            });*/
 
             return false;
         });
@@ -125,33 +164,39 @@
             layer.msg(JSON.stringify(data.field));
             var $ = layui.$;
 
-            $(document).on('click' , 'button' , function(){
-                var orderStatus = $(this).text();
+            $(document).on('click', 'button', function () {
+                var orderStatus = $(this).text().trim();
+                if(orderStatus=="全部") {orderStatus=null;}
                 //alert(orderStatus);
-            $.ajax({
-                url: "/order/findOrderByStatus",
-                type: 'get',
-                data:
-                    {"orderStatus": orderStatus},
-                dataType: "json",
-                success: function (data) {
-                    //请求成功触发的回调
-                    console.log(data)
-                    if (data.code == 200) {
-                        var d = data.data;
+                table.reload('idTest', {
+                    url: "/order/findOrderByStatus"
+                    , where: {"orderStatus": orderStatus },
+                    //设定异步数据接口的额外参数
+                    //,height: 300
+                });
+                /* $.ajax({
+                     url: "/order/findOrderByStatus",
+                     type: 'get',
+                     data:
+                         {"orderStatus": orderStatus},
+                     dataType: "json",
+                     success: function (data) {
+                         //请求成功触发的回调
+                         console.log(data)
+                         if (data.code == 200) {
+                             var d = data.data;
+                         } else {
+                             // errorResult();
+                         }
 
-                    } else {
-                        // errorResult();
-                    }
+                     },
+                     error: function (err) {
+                         //请求失败触发的回调
+                         console.log(err)
+                     }
 
-                },
-                error: function (err) {
-                    //请求失败触发的回调
-                    console.log(err)
-                }
-
-            });
-            return false;
+                 });*/
+                return false;
             });
         });
 
@@ -160,6 +205,7 @@
         table.render({
             elem: '#ordertable'
             , height: 312
+            , id: 'idTest'
             , url: '/order/list' //数据接口
             , page: true //开启分页
             , cols: [[ //表头
