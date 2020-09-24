@@ -10,8 +10,8 @@
         SELECT studentId,NAME name,identifyNo,profess,class studentClass,enroTime,telNo,credit
         from myssproject.student
         <where>
-            <if  test="studentId!=null and studentId!='com.itszt.manager.entity.Student'">
-                studentId like concat('%',#{studentId},'%')
+            <if  test="studentId!=null and studentId!=''">
+                studentId =#{studentId}
             </if>
             <if  test="name!=null and name!=''">
 
