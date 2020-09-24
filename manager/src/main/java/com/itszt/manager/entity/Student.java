@@ -17,8 +17,8 @@ public class Student {
     private Integer studentId;
     private String name;//NAME
     private String identifyNo;
-    private String prosess;
-    private Date enroTime;
+    private String profess;
+    private String enroTime;
     private String telNo;
     private Integer credit;
     private String studentClass;//class
