@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itszt.manager.dao.StudentDao">
+    <select id="findStudetBy" resultType="com.itszt.manager.entity.Student">
+       /* Integer studentId,String name,String identifyNo*/
+        /*学号(studentId),学生姓名(NAME)，身份证号(identifyNo)，专业(profess)，班级(class)，入学时间(enroTime)，联系电话(telNo)，已修学分(credit)*/
+
+        SELECT studentId,NAME name,identifyNo,profess,class studentClass,enroTime,telNo,credit
+        from myssproject.student
+        <where>
+            <if  test="studentId!=null and studentId!='com.itszt.manager.entity.Student'">
+                studentId like concat('%',#{studentId},'%')
+
+            </if>
+            <if  test="name!=null and name!=''">
+
+               and  name like concat('%',#{name},'%')
+            </if>
+            <if  test="identifyNo!=null and identifyNo!=''">
+
+               and  identifyNo like concat('%',#{identifyNo},'%')
+            </if>
+
+        </where>
+
+
+    </select>
+</mapper>
