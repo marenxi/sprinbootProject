@@ -1,14 +1,18 @@
 package com.itszt.manager.service;
 
 import com.itszt.manager.entity.Order;
+import com.itszt.manager.entity.PageObject;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 public interface OrderService {
+
+
+
    /* 1.查询所有订单信息*/
-    public List<Order> findOrderList();
+    public PageObject<Order> findOrderList(Integer pageCurrent);
 
     /*2.新增订单信息*/
     public int insertOrder(Order order);

@@ -2,6 +2,7 @@ package com.itszt.manager.controller;
 
 import com.itszt.manager.entity.DataResponse;
 import com.itszt.manager.entity.Order;
+import com.itszt.manager.entity.PageObject;
 import com.itszt.manager.service.OrderService;
 import jdk.nashorn.internal.ir.RuntimeNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,18 +29,18 @@ public class OrderController {
         return "/order/order";
     }
 
-    //查询出所有订单
-    @GetMapping("/list")
+    //查询出所有订单(订单分页查询)
+    @PostMapping("/list")
     @ResponseBody
-    public DataResponse orderList() {
+    public DataResponse orderList(Integer pageCurrent) {
         DataResponse dataResponse = new DataResponse();
         try {
-            List<Order> orderList = orderService.findOrderList();
+            PageObject<Order> orderList = orderService.findOrderList(pageCurrent);
+
             System.out.println("返回订单集合数据:");
             System.out.println(orderList);
             dataResponse.setCode(0);
             dataResponse.setData(orderList);
-            dataResponse.setCount(orderList.size());
             dataResponse.setMsg("查询订单数据成功");
         }catch (Exception e){
             dataResponse.setMsg("");

@@ -3,9 +3,16 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.itszt.manager.dao.OrderDao">
+
+    <!-- 统计记录总数 -->
+    <select id="getRowCount" resultType="int">
+        select count(*)
+        from  myssproject.order_manage
+    </select>
     <select id="findAllOrderList" resultType="com.itszt.manager.entity.Order">
     SELECT *
     FROM myssproject.order_manage
+    limit #{startIndex},#{pageSize}
     </select>
 
     <insert id="insertOrder" parameterType="com.itszt.manager.entity.Order" >
@@ -13,6 +20,7 @@
         VALUES(#{orderId},#{talentName},#{workMenuId},#{workType},#{workTime},#{orderAmount},#{orderStatus},#{orderTime})
 
     </insert>
+
 
     <select id="findOrderByConditions" resultType="com.itszt.manager.entity.Order">
         SELECT *

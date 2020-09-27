@@ -11,8 +11,11 @@ import java.util.List;
 @Mapper
 @Repository
 public interface OrderDao {
-    //1.查询所有订单信息
-    public List<Order> findAllOrderList();
+    //1.1分页查询的总行数
+    int getRowCount();
+
+    //1.查询所有订单信息(分页查询)
+    public List<Order> findAllOrderList(@Param("startIndex") Integer startIndex,@Param("pageSize") Integer pageSize);
 
     /*2.新增订单信息*/
     public int insertOrder(Order order);
