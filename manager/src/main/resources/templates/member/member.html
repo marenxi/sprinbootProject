@@ -145,17 +145,17 @@
 
         //var table1=layui.table;
         //第二个实例，根据时间段及会员的字段列名查询出所有符合条件的记录
-        
 
-        tableIns.reload('membertable',{//表格数据的重载
-            where: { //设定异步数据接口的额外参数，任意设
-               url:'/doMemberListBy'
-
-            }
-            ,page: {
-                curr: 1 //重新从第 1 页开始
-            }
-        });
+//
+//        tableIns.reload('membertable',{//表格数据的重载
+//            where: { //设定异步数据接口的额外参数，任意设
+//               url:'/doMemberListBy'
+//
+//            }
+//            ,page: {
+//                curr: 1 //重新从第 1 页开始
+//            }
+//        });
 
         //监听工具条
         table.on('tool(membertablefilter)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
