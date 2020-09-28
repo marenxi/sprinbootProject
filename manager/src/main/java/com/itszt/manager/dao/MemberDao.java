@@ -30,6 +30,9 @@ public interface MemberDao {
 
     //根据时间段和任意会员的字段进行查询
     public  List<Member> findByManyConditions(@Param("startDate") String startTime, @Param("endDate") String endTime, @Param("name") String name, @Param("workType") String workType,
-                                              @Param("telephone") String telephone, @Param("age") Integer age);
+                                              @Param("telephone") String telephone, @Param("age") Integer age, @Param("pageStart")Integer page,  @Param("pageEnd")Integer limit);
+
+    public  Integer countManyConditions(@Param("startDate") String startTime, @Param("endDate") String endTime, @Param("name") String name, @Param("workType") String workType,
+                                              @Param("telephone") String telephone, @Param("age") Integer age, @Param("pageStart")Integer page,  @Param("pageEnd")Integer limit);
 
 }

@@ -29,6 +29,32 @@
               and work_type like concat("%",#{workType},"%")
          </if>
      </where>
+        limit #{pageStart},#{pageEnd}
+    </select>
+    <select id="countManyConditions" resultType="integer">
+        SELECT count(1)
+        FROM myssproject.member_manage
+        <where>
+            <if test="startDate!=null and startDate!='' ">
+                <![CDATA[ and regist_time>= #{startDate}  ]]>
+            </if>
+            <if test="endDate!=null and endDate!='' "  >
+                <![CDATA[ and regist_time<= #{endDate}  ]]>
+            </if>
+
+            <if test="name!=null and name!=''"  >
+                and name like concat("%",#{name},"%")
+            </if>
+            <if test="age!=null and name!=''"  >
+                and age like concat("%",#{age},"%")
+            </if>
+            <if test="telephone!=null and telephone!=''"  >
+                and telephone like concat("%",#{telephone},"%")
+            </if>
+            <if test="workType!=null and workType!=''"  >
+                and work_type like concat("%",#{workType},"%")
+            </if>
+        </where>
     </select>
 
     <!--根据id查询会员信息-->

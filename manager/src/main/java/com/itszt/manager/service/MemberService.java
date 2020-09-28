@@ -28,5 +28,6 @@ public interface MemberService {
     public  int  updateMemberById(Member member);
 
     //根据时间段和任意会员的字段进行查询
-    public  List<Member> findByManyConditions(String startDate, String endDate, String name, String workType, String telephone, Integer age);
+    public  List<Member> findByManyConditions(String startDate, String endDate, String name, String workType, String telephone, Integer age,Integer pageStart, Integer pageEnd);
+    public  Integer countManyConditions(String startDate, String endDate, String name, String workType, String telephone, Integer age,Integer pageStart, Integer pageEnd);
 }

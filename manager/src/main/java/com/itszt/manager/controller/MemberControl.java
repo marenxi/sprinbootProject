@@ -105,15 +105,18 @@ public class MemberControl {
     //根据时间段和任意会员的字段进行会员信息的精准查询
     @RequestMapping("/doMemberListBy")
     @ResponseBody
-    public DataResponse fingMembersByManyConditions(String startDate,String endDate,String name,String workType,String telephone,Integer age){
+    public DataResponse fingMembersByManyConditions(String startDate,String endDate,String name,String workType,String telephone,Integer age,Integer page, Integer limit){
         DataResponse dataResponse = new DataResponse();
         try {
-            List<Member> memberList = memberService.findByManyConditions(startDate,endDate,name,workType,telephone,age);
+            Integer pageStart=(page-1)*limit;
+            Integer pageEnd=page*limit;
+            List<Member> memberList = memberService.findByManyConditions(startDate,endDate,name,workType,telephone,age,pageStart,pageEnd);
+            Integer count = memberService.countManyConditions(startDate,endDate,name,workType,telephone,age,pageStart,pageEnd);
             System.out.println("返回符合条件的会员数据集合:");
             System.out.println(memberList);
             dataResponse.setCode(0);
             dataResponse.setData(memberList);
-            dataResponse.setCount(memberList.size());
+            dataResponse.setCount(count);
         }catch (Exception e){
             dataResponse.setCode(0);
             dataResponse.setData(null);
@@ -125,5 +128,6 @@ public class MemberControl {
         return dataResponse;
 
     }
+
 
 }

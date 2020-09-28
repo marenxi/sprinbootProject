@@ -44,10 +44,14 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<Member> findByManyConditions(String startDate, String endDate, String name, String workType, String telephone, Integer age) {
-        return memberMapper.findByManyConditions(startDate,endDate,name,workType,telephone,age);
+    public List<Member> findByManyConditions(String startDate, String endDate, String name, String workType, String telephone, Integer age,Integer pageStart, Integer pageEnd) {
+        return memberMapper.findByManyConditions(startDate,endDate,name,workType,telephone,age,pageStart,pageEnd);
     }
 
+    @Override
+    public Integer countManyConditions(String startDate, String endDate, String name, String workType, String telephone, Integer age, Integer pageStart, Integer pageEnd) {
+        return memberMapper.countManyConditions(startDate,endDate,name,workType,telephone,age,pageStart,pageEnd);
+    }
 
     @Override
     public Member findMemberById(Integer id) {
