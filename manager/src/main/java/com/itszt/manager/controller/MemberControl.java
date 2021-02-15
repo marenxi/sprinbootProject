@@ -123,31 +123,39 @@ public class MemberControl {
         Integer pageEnd = page * limit-1;
         logger.info(String.valueOf(pageStart));
         logger.info(String.valueOf(pageEnd));
+        StringBuffer result= new StringBuffer();
+        if((name!=null)||(page!=null)){
+            result.append(name).append(page);
+        }
+//        if(page!=null){
+//            result.append(page);
+//        }
         try {
             List<Member> list = new ArrayList<Member>();
-//            Object memberList1 = redisTemplate.opsForValue().get("memberList");
+            Object memberList1 = redisTemplate.opsForValue().get(result.toString());
 //            if(memberList1!=null){redisTemplate.delete("memberList");}
-//            logger.info("从redis缓存中取，会员列表为{}",memberList1);
+            logger.info("从redis缓存中取，会员列表为{}",memberList1);
             Integer count = memberService.countManyConditions(startDate, endDate, name, workType, telephone, age, pageStart, pageEnd);
-//            if(memberList1==null) {/*如果缓存中为空则去数据库中查询取值，取出之后再放入到缓存中去*/
+            if(memberList1==null) {/*如果缓存中为空则去数据库中查询取值，取出之后再放入到缓存中去*/
                 List<Member> memberList = memberService.findByManyConditions(startDate, endDate, name, workType, telephone, age, pageStart, pageEnd);
                 String JsonResult = ObjectMapperUtil.toJSON(memberList);//将对象转化为JSON
-                redisTemplate.opsForValue().set("memberList", JsonResult);
+//              redisTemplate.opsForValue().set("memberList"+page+name, JsonResult);
+                redisTemplate.opsForValue().set(result.toString(), JsonResult);
                 logger.info("从数据库中获得的查询结果为：{}",memberList);
                 dataResponse.setCode(0);
                 dataResponse.setData(memberList);
                 dataResponse.setCount(count);
                 dataResponse.setMsg("");
                 return dataResponse;
-//            }else{
-//                logger.info("从缓存中获得的查询结果为：{}",memberList1);
-//                List memberList = ObjectMapperUtil.toObject(memberList1.toString(), list.getClass());
-//                dataResponse.setCode(0);
-//                dataResponse.setData(memberList);
-//                dataResponse.setCount(count);
-//                dataResponse.setMsg("");
-//                return dataResponse;
-//            }
+            }else{
+            logger.info("从缓存中获得的查询结果为：{}",memberList1);
+            List memberList = ObjectMapperUtil.toObject(memberList1.toString(), list.getClass());
+            dataResponse.setCode(0);
+            dataResponse.setData(memberList);
+            dataResponse.setCount(count);
+            dataResponse.setMsg("");
+            return dataResponse;
+        }
         }catch (Exception e){
             dataResponse.setCode(0);
             dataResponse.setData(null);
