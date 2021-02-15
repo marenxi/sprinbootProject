@@ -1,16 +1,24 @@
 package com.itszt.manager.controller;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.itszt.manager.entity.DataResponse;
 import com.itszt.manager.entity.Member;
 import com.itszt.manager.service.MemberService;
+import com.itszt.manager.util.ObjectMapperUtil;
 import org.apache.ibatis.annotations.Param;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.thymeleaf.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -18,7 +26,9 @@ import java.util.List;
 public class MemberControl {
     @Autowired
     MemberService memberService;
-
+    @Autowired
+    RedisTemplate redisTemplate;
+    Logger logger=LoggerFactory.getLogger(MemberControl.class);
     @GetMapping("/member")
     public String order() {
         System.out.println("返回会员管理页面");
@@ -40,8 +50,10 @@ public class MemberControl {
         DataResponse dataResponse = new DataResponse();
         try {
             List<Member> memberList = memberService.findAll();
+            System.out.println("返回会员集合数据:"+memberList);
+            redisTemplate.opsForValue().set(memberList,memberList);
             System.out.println(memberList);
-            System.out.println("返回会员集合数据");
+            logger.info("从redis缓存中取，会员列表为{}",redisTemplate.opsForValue().get(memberList));
             dataResponse.setCode(0);
             dataResponse.setData(memberList);
             dataResponse.setCount(memberList.size());
@@ -107,25 +119,45 @@ public class MemberControl {
     @ResponseBody
     public DataResponse fingMembersByManyConditions(String startDate,String endDate,String name,String workType,String telephone,Integer age,Integer page, Integer limit){
         DataResponse dataResponse = new DataResponse();
+        Integer pageStart = (page - 1) * limit;
+        Integer pageEnd = page * limit-1;
+        logger.info(String.valueOf(pageStart));
+        logger.info(String.valueOf(pageEnd));
         try {
-            Integer pageStart=(page-1)*limit;
-            Integer pageEnd=page*limit;
-            List<Member> memberList = memberService.findByManyConditions(startDate,endDate,name,workType,telephone,age,pageStart,pageEnd);
-            Integer count = memberService.countManyConditions(startDate,endDate,name,workType,telephone,age,pageStart,pageEnd);
-            System.out.println("返回符合条件的会员数据集合:");
-            System.out.println(memberList);
-            dataResponse.setCode(0);
-            dataResponse.setData(memberList);
-            dataResponse.setCount(count);
+            List<Member> list = new ArrayList<Member>();
+//            Object memberList1 = redisTemplate.opsForValue().get("memberList");
+//            if(memberList1!=null){redisTemplate.delete("memberList");}
+//            logger.info("从redis缓存中取，会员列表为{}",memberList1);
+            Integer count = memberService.countManyConditions(startDate, endDate, name, workType, telephone, age, pageStart, pageEnd);
+//            if(memberList1==null) {/*如果缓存中为空则去数据库中查询取值，取出之后再放入到缓存中去*/
+                List<Member> memberList = memberService.findByManyConditions(startDate, endDate, name, workType, telephone, age, pageStart, pageEnd);
+                String JsonResult = ObjectMapperUtil.toJSON(memberList);//将对象转化为JSON
+                redisTemplate.opsForValue().set("memberList", JsonResult);
+                logger.info("从数据库中获得的查询结果为：{}",memberList);
+                dataResponse.setCode(0);
+                dataResponse.setData(memberList);
+                dataResponse.setCount(count);
+                dataResponse.setMsg("");
+                return dataResponse;
+//            }else{
+//                logger.info("从缓存中获得的查询结果为：{}",memberList1);
+//                List memberList = ObjectMapperUtil.toObject(memberList1.toString(), list.getClass());
+//                dataResponse.setCode(0);
+//                dataResponse.setData(memberList);
+//                dataResponse.setCount(count);
+//                dataResponse.setMsg("");
+//                return dataResponse;
+//            }
         }catch (Exception e){
             dataResponse.setCode(0);
             dataResponse.setData(null);
             dataResponse.setCount(0);
             System.out.println("e = " + e);
             dataResponse.setMsg("您查找的会员信息不存在，请重新输入查询条件");
+            dataResponse.setMsg("");
+            return dataResponse;
+
         }
-        dataResponse.setMsg("");
-        return dataResponse;
 
     }
 
