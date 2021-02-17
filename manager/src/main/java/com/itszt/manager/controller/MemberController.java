@@ -1,14 +1,11 @@
 package com.itszt.manager.controller;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.itszt.manager.entity.DataResponse;
 import com.itszt.manager.entity.Member;
 import com.itszt.manager.service.MemberService;
 import com.itszt.manager.util.ObjectMapperUtil;
 import com.itszt.manager.util.RedisUtils;
-import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +14,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.thymeleaf.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 @Controller
-public class MemberControl {
+public class MemberController {
     @Autowired
     MemberService memberService;
     @Autowired
@@ -34,7 +28,7 @@ public class MemberControl {
     
     @Resource
     private RedisUtils redisUtils;         
-    Logger logger=LoggerFactory.getLogger(MemberControl.class);
+    Logger logger=LoggerFactory.getLogger(MemberController.class);
     @GetMapping("/member")
     public String order() {
         System.out.println("返回会员管理页面");

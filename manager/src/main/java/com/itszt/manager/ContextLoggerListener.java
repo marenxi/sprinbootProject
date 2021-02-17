@@ -1,6 +1,8 @@
 package com.itszt.manager;
 
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.google.gson.Gson;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -26,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-@Order(value = 1) //切面的优先级
+@Order(value = Integer.MAX_VALUE) //切面的优先级
 @Component
 @Aspect
 public class ContextLoggerListener implements ApplicationListener<ContextRefreshedEvent> {
@@ -35,7 +37,12 @@ public class ContextLoggerListener implements ApplicationListener<ContextRefresh
     /**
      * @Pointcut：定义一个切点，后面跟随一个表达式，表达式可以定义为某个 package 下的方法，也可以是自定义注解等；
      */
-    @Pointcut("@annotation(org.springframework.web.bind.annotation.RequestMapping) && @annotation(org.springframework.web.bind.annotation.ResponseBody)")
+    @Pointcut("@annotation(org.springframework.web.bind.annotation.GetMapping) || " +
+            "@annotation(org.springframework.web.bind.annotation.RequestMapping) ||" +
+            "@annotation(org.springframework.web.bind.annotation.DeleteMapping) ||" +
+            "@annotation(org.springframework.web.bind.annotation.PutMapping) ||" +
+            "@annotation(org.springframework.web.bind.annotation.ResponseBody) ||" +
+            "@annotation(org.springframework.web.bind.annotation.PostMapping)")
     public void pointCut() {
     }
 
@@ -64,17 +71,15 @@ public class ContextLoggerListener implements ApplicationListener<ContextRefresh
         if (signature1 instanceof MethodSignature) {
             signature = (MethodSignature) signature1;
         }
-        Method currentMethod = joinPoint.getTarget().getClass().getMethod(signature.getName(), signature.getParameterTypes());
         boolean hasRequestMapping = signature.getMethod().isAnnotationPresent(RequestMapping.class);
         if ((isRestController || isController) && hasRequestMapping) {
             if (RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes) {
                 ServletRequestAttributes servlet = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
                 HttpServletRequest request = servlet.getRequest();
                 HttpServletResponse response = servlet.getResponse();
-                String methodName = joinPoint.getSignature().getName();
                 String param = getParam(joinPoint);
                 // 开始打印请求日志
-                logger.info("========================================== Start ==========================================");
+                logger.info("========================= Start =========================");
                 // 打印请求 url
                 logger.info("URL            : {}", request.getRequestURL().toString());
                 // 打印 Http method
@@ -86,15 +91,15 @@ public class ContextLoggerListener implements ApplicationListener<ContextRefresh
                 // 打印请求入参
                 logger.info("Request Args   : {}", new Gson().toJson(joinPoint.getArgs()));
                 logger.info("方法:" + signature.getMethod().getName() + "-->参数:" + param);
+                String fieldsTypeNameAndValue = getFieldsTypeNameAndValue(joinPoint);
+                logger.info("fieldsTypeNameAndValue   : {}", fieldsTypeNameAndValue);
                 startTime = System.currentTimeMillis();
                 result = joinPoint.proceed();
                 endTime = System.currentTimeMillis();
                 // 打印出参
                 logger.info("Response Args  : {}", new Gson().toJson(result));
-                String methodDeclar = getMethodNameAndFieldsTypeAndName(currentMethod);
-                logger.info("methodDeclar   : {}",methodDeclar);
                 // 结束打印请求日志
-                logger.info("=========================================== End ===========================================");
+                logger.info("========================== End ==========================");
             } else {
                 startTime = System.currentTimeMillis();
                 result = joinPoint.proceed();
@@ -110,6 +115,17 @@ public class ContextLoggerListener implements ApplicationListener<ContextRefresh
         return result;
     }
 
+    /**
+     * @param ProceedingJoinPoint
+     * @Author marenxi <marenxi@jd.com>
+     * @Description:
+     * @MethodName 获取请求参数和值的json串
+     * @Return {@link null}
+     * @Throw
+     * @Version V0.0.1
+     * @Since 1.0
+     * @Date 2021/2/17 14:57
+     */
     public String getParam(ProceedingJoinPoint proceedingJoinPoint) {
         Map<String, Object> map = new HashMap<String, Object>();
         Object[] values = proceedingJoinPoint.getArgs();
@@ -117,39 +133,45 @@ public class ContextLoggerListener implements ApplicationListener<ContextRefresh
         for (int i = 0; i < names.length; i++) {
             map.put(names[i], values[i]);
         }
-        return new Gson().toJson(map);
+        String jsonString = JSONObject.toJSONString(map, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
+//        return new Gson().toJson(map);//使用Gson对map进行转换时丢失value为null的key(可以考虑自己构建特殊的map)
+        return jsonString;
     }
+
+    /**
+     * @param ProceedingJoinPoint
+     * @Author marenxi <marenxi@jd.com>
+     * @Description:
+     * @MethodName 获取目标方法声明的参数类型、参数名、传递的参数值
+     * @Return {@link null}
+     * @Throw NoSuchMethodException
+     * @Version V0.0.1
+     * @Since 1.0
+     * @Date 2021/2/17 14:55
+     */
+    private String getFieldsTypeNameAndValue(ProceedingJoinPoint proceedingJoinPoint) throws NoSuchMethodException {
+        HashMap<String, HashMap<String, Object>> map = new HashMap<>();
+        //参数值
+        Object[] values = proceedingJoinPoint.getArgs();
+        //参数变量名
+        String[] names = ((CodeSignature) proceedingJoinPoint.getSignature()).getParameterNames();
+        //参数类型数组
+        Class[] types = ((CodeSignature) proceedingJoinPoint.getSignature()).getParameterTypes();
+        for (int i = 0; i < names.length; i++) {
+            HashMap<String, Object> mapTmp = new HashMap<>();
+            mapTmp.put(types[i].getSimpleName(), values[i]);
+            map.put(names[i], mapTmp);  //可读性以及格式化方面还不是太好
+        }
+        String jsonString = JSONObject.toJSONString(map, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
+        return jsonString;
+    }
+
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
 
     }
 
-
-    /**
-     * 得到方法参数的名称
-     *
-     * @return
-     * @throws NoSuchMethodException
-     */
-    private String getMethodNameAndFieldsTypeAndName(Method currentMethod) throws NoSuchMethodException {
-        StringBuffer stringBuffer=new StringBuffer();
-        // 得到方法的返回值类型的类类型
-        Class<?> returnType = currentMethod.getReturnType();
-        stringBuffer.append(returnType.getName());
-        stringBuffer.append(" ");
-        // 得到方法的名称
-        stringBuffer.append(currentMethod.getName());
-        stringBuffer.append("(");
-        // 获取参数类型
-        Class[] paramTypes = currentMethod.getParameterTypes();
-        for (Class class2 : paramTypes) {
-            stringBuffer.append(class2.getSimpleName());
-            stringBuffer.append(",");
-        }
-        stringBuffer.append(")");
-        return stringBuffer.toString();
-    }
 
 }
 
