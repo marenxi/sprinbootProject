@@ -16,8 +16,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -37,12 +36,13 @@ public class ContextLoggerListener implements ApplicationListener<ContextRefresh
     /**
      * @Pointcut：定义一个切点，后面跟随一个表达式，表达式可以定义为某个 package 下的方法，也可以是自定义注解等；
      */
-    @Pointcut("@annotation(org.springframework.web.bind.annotation.GetMapping) || " +
-            "@annotation(org.springframework.web.bind.annotation.RequestMapping) ||" +
-            "@annotation(org.springframework.web.bind.annotation.DeleteMapping) ||" +
+    @Pointcut("@annotation(org.springframework.web.bind.annotation.RequestMapping) || " +
+            "@annotation(org.springframework.web.bind.annotation.GetMapping) ||" +
+            "@annotation(org.springframework.web.bind.annotation.PostMapping) ||" +
             "@annotation(org.springframework.web.bind.annotation.PutMapping) ||" +
-            "@annotation(org.springframework.web.bind.annotation.ResponseBody) ||" +
-            "@annotation(org.springframework.web.bind.annotation.PostMapping)")
+            "@annotation(org.springframework.web.bind.annotation.DeleteMapping) ||" +
+            "@annotation(org.springframework.web.bind.annotation.PatchMapping) ||" +
+            "@annotation(org.springframework.web.bind.annotation.ResponseBody)")
     public void pointCut() {
     }
 
@@ -72,7 +72,9 @@ public class ContextLoggerListener implements ApplicationListener<ContextRefresh
             signature = (MethodSignature) signature1;
         }
         boolean hasRequestMapping = signature.getMethod().isAnnotationPresent(RequestMapping.class);
-        if ((isRestController || isController) && hasRequestMapping) {
+        boolean hasGetMapping = signature.getMethod().isAnnotationPresent(GetMapping.class);
+        boolean hasPostMapping = signature.getMethod().isAnnotationPresent(PostMapping.class);
+        if ((isRestController || isController) && (hasRequestMapping || hasGetMapping || hasPostMapping)) {
             if (RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes) {
                 ServletRequestAttributes servlet = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
                 HttpServletRequest request = servlet.getRequest();
