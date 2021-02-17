@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+
+@Order(value=999) //切面的优先级
 @Component
 @Aspect
 public class ContextLoggerListener implements ApplicationListener<ContextRefreshedEvent> {
@@ -88,9 +91,10 @@ public class ContextLoggerListener implements ApplicationListener<ContextRefresh
                 endTime = System.currentTimeMillis();
                 // 打印出参
                 logger.info("Response Args  : {}", new Gson().toJson(result));
+                String methodDeclar = getMethodNameAndFieldsTypeAndName(currentMethod);
+                logger.info("methodDeclar   : {}",methodDeclar);
                 // 结束打印请求日志
                 logger.info("=========================================== End ===========================================");
-                String methodDeclar = getMethodNameAndFieldsTypeAndName(currentMethod);
             } else {
                 startTime = System.currentTimeMillis();
                 result = joinPoint.proceed();
@@ -129,18 +133,22 @@ public class ContextLoggerListener implements ApplicationListener<ContextRefresh
      * @throws NoSuchMethodException
      */
     private String getMethodNameAndFieldsTypeAndName(Method currentMethod) throws NoSuchMethodException {
+        StringBuffer stringBuffer=new StringBuffer();
         // 得到方法的返回值类型的类类型
         Class<?> returnType = currentMethod.getReturnType();
-        System.out.print(returnType.getName() + " ");
+        stringBuffer.append(returnType.getName());
+        stringBuffer.append(" ");
         // 得到方法的名称
-        System.out.print(currentMethod.getName() + "(");
+        stringBuffer.append(currentMethod.getName());
+        stringBuffer.append("(");
         // 获取参数类型
         Class[] paramTypes = currentMethod.getParameterTypes();
         for (Class class2 : paramTypes) {
-            System.out.print(class2.getName() + ",");
+            stringBuffer.append(class2.getSimpleName());
+            stringBuffer.append(",");
         }
-        System.out.println(")");
-        return null;
+        stringBuffer.append(")");
+        return stringBuffer.toString();
     }
 
 }
