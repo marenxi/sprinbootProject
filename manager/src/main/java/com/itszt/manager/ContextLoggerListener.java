@@ -88,11 +88,9 @@ public class ContextLoggerListener implements ApplicationListener<ContextRefresh
                 endTime = System.currentTimeMillis();
                 // 打印出参
                 logger.info("Response Args  : {}", new Gson().toJson(result));
-                //获取方法返回值、方法名称、方法参数类型、方法参数名称、方法入参数值
-                String methodDeclaredAndFieldsTypesAndNames = getMethodNameAndFieldsTypeAndName(currentMethod);
-                logger.info("方法声明{}", methodDeclaredAndFieldsTypesAndNames);
                 // 结束打印请求日志
                 logger.info("=========================================== End ===========================================");
+                String methodDeclar = getMethodNameAndFieldsTypeAndName(currentMethod);
             } else {
                 startTime = System.currentTimeMillis();
                 result = joinPoint.proceed();
@@ -139,7 +137,7 @@ public class ContextLoggerListener implements ApplicationListener<ContextRefresh
         // 获取参数类型
         Class[] paramTypes = currentMethod.getParameterTypes();
         for (Class class2 : paramTypes) {
-            System.out.print(class2.getSimpleName() + ",");
+            System.out.print(class2.getName() + ",");
         }
         System.out.println(")");
         return null;

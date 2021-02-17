@@ -1,11 +1,14 @@
 package com.itszt.manager.controller;
 
-
+import ch.qos.logback.core.net.SyslogOutputStream;
+import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.itszt.manager.entity.DataResponse;
 import com.itszt.manager.entity.Member;
 import com.itszt.manager.service.MemberService;
 import com.itszt.manager.util.ObjectMapperUtil;
 import com.itszt.manager.util.RedisUtils;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +17,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.thymeleaf.util.StringUtils;
+
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -24,9 +31,9 @@ public class MemberControl {
     MemberService memberService;
     @Autowired
     RedisTemplate redisTemplate;
-
+    
     @Resource
-    private RedisUtils redisUtils;
+    private RedisUtils redisUtils;         
     Logger logger=LoggerFactory.getLogger(MemberControl.class);
     @GetMapping("/member")
     public String order() {
@@ -131,15 +138,20 @@ public class MemberControl {
 //        }
         try {
             List<Member> list = new ArrayList<Member>();
-            Object memberList1 = redisTemplate.opsForValue().get(result.toString());
+//            Object memberList1 = redisTemplate.opsForValue().get(result.toString());
+            Object memberList1 = redisUtils.get(result.toString());//使用redis工具类操作redis对象
+            if (memberList1 != null) {
+                String str = memberList1.toString();
+              list = JSONObject.parseArray(str, Member.class);
+            }
 //            if(memberList1!=null){redisTemplate.delete("memberList");}
             logger.info("从redis缓存中取，会员列表为{}",memberList1);
             Integer count = memberService.countManyConditions(startDate, endDate, name, workType, telephone, age, pageStart, pageEnd);
-            if(memberList1==null) {/*如果缓存中为空则去数据库中查询取值，取出之后再放入到缓存中去*/
+            if(list==null||list.size()==0) {/*如果缓存中为空则去数据库中查询取值，取出之后再放入到缓存中去*/
                 List<Member> memberList = memberService.findByManyConditions(startDate, endDate, name, workType, telephone, age, pageStart, pageEnd);
                 String JsonResult = ObjectMapperUtil.toJSON(memberList);//将对象转化为JSON
-//              redisTemplate.opsForValue().set("memberList"+page+name, JsonResult);
-                redisTemplate.opsForValue().set(result.toString(), JsonResult);
+//                redisTemplate.opsForValue().set(result.toString(), JsonResult);
+                redisUtils.set(result.toString(), JsonResult);//使用redis工具类操作redis对象
                 logger.info("从数据库中获得的查询结果为：{}",memberList);
                 dataResponse.setCode(0);
                 dataResponse.setData(memberList);
