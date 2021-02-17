@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-@Order(value=999) //切面的优先级
+@Order(value = 1) //切面的优先级
 @Component
 @Aspect
 public class ContextLoggerListener implements ApplicationListener<ContextRefreshedEvent> {
