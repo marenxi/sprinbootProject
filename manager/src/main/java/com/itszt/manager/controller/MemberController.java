@@ -6,6 +6,8 @@ import com.itszt.manager.entity.Member;
 import com.itszt.manager.service.MemberService;
 import com.itszt.manager.util.ObjectMapperUtil;
 import com.itszt.manager.util.RedisUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@Api(tags = "swaggerMemberController相关的api")
 public class MemberController {
     @Autowired
     MemberService memberService;
@@ -117,6 +120,7 @@ public class MemberController {
     //根据时间段和任意会员的字段进行会员信息的精准查询
     @RequestMapping("/doMemberListBy")
     @ResponseBody
+    @ApiOperation(value="根据条件查询会员信息")
     public DataResponse fingMembersByManyConditions(String startDate,String endDate,String name,String workType,String telephone,Integer age,Integer page, Integer limit){
         DataResponse dataResponse = new DataResponse();
         Integer pageStart = (page - 1) * limit;
