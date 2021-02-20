@@ -5,11 +5,16 @@ import org.springframework.stereotype.Component;
 
 
 import javax.annotation.Resource;
+import java.util.Set;
 
 @Component
 public class RedisUtils {
     @Resource
     private RedisTemplate redisTemplate;
+    /*获取redis中的所有key*/
+    public Set<String> getAllKeys(){
+        return redisTemplate.keys("*");
+    }
     /**
      * 读取缓存
      *
