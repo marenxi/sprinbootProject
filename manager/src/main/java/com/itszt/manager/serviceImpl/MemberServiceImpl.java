@@ -32,8 +32,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void insertMember(Member member) {
+    public boolean insertMember(Member member) {
         memberMapper.insertMember(member);
+        return true;
     }
 
     @Override
