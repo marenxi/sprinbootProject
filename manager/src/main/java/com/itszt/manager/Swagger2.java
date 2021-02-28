@@ -25,8 +25,11 @@ import  springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class Swagger2 implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        /*addResourceHandler("/static/**") 所有/static/开头的请求 都会去后面配置的路径下查找资源,开放资源路径，
+        * 表示要开放的资源，这里的意思是开放static包下的js则可以访问，如果static下还有css不开放,则css无法使用,
+        * 而layui是static包下的路径，如果不开放资源路径，也将无法访问*/
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
-
+        registry.addResourceHandler("/layui/**").addResourceLocations("classpath:/static/layui/");
         registry.addResourceHandler("swagger-ui.html")
                 .addResourceLocations("classpath:/META-INF/resources/");
 
