@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -133,9 +134,15 @@ public class ContextLoggerListener implements ApplicationListener<ContextRefresh
         Object[] values = proceedingJoinPoint.getArgs();
         String[] names = ((CodeSignature) proceedingJoinPoint.getSignature()).getParameterNames();
         for (int i = 0; i < names.length; i++) {
+            if(values[i] instanceof MultipartFile){
+                continue;
+            }
             map.put(names[i], values[i]);
         }
-        String jsonString = JSONObject.toJSONString(map, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
+        String jsonString=null;
+        if(map.size()>0){
+//            jsonString  = JSONObject.toJSONString(map, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
+        }
 //        return new Gson().toJson(map);//使用Gson对map进行转换时丢失value为null的key(可以考虑自己构建特殊的map)
         return jsonString;
     }
@@ -162,6 +169,9 @@ public class ContextLoggerListener implements ApplicationListener<ContextRefresh
         for (int i = 0; i < names.length; i++) {
             HashMap<String, Object> mapTmp = new HashMap<>();
             mapTmp.put(types[i].getSimpleName(), values[i]);
+            if(values[i] instanceof MultipartFile){
+                continue;
+            }
             map.put(names[i], mapTmp);  //可读性以及格式化方面还不是太好
         }
         String jsonString = JSONObject.toJSONString(map, SerializerFeature.WRITE_MAP_NULL_FEATURES, SerializerFeature.QuoteFieldNames);
